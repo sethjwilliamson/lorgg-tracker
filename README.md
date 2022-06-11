@@ -1,23 +1,13 @@
-# electron-vue-vite
-
-[![awesome-vite](https://awesome.re/mentioned-badge.svg)](https://github.com/vitejs/awesome-vite)
-![GitHub license](https://img.shields.io/github/license/caoxiemeihao/electron-vue-vite?style=flat)
-![GitHub stars](https://img.shields.io/github/stars/caoxiemeihao/electron-vue-vite?color=fa6470&style=flat)
-![GitHub forks](https://img.shields.io/github/forks/caoxiemeihao/electron-vue-vite?style=flat)
-
-
-**English | [简体中文](README.zh-CN.md)**
-
 🥳 Real simple `Electron` + `Vue3` + `Vite2` boilerplate.
 
 ## Quick Start
 
   ```bash
   # clone the project
-  git clone https://github.com/caoxiemeihao/electron-vue-vite.git
+  git clone https://github.com/sethjwilliamson/lorgg-tracker.git
 
   # enter the project directory
-  cd electron-vue-vite
+  cd lorgg-tracker
 
   # install dependency
   npm install
@@ -25,14 +15,6 @@
   # develop
   npm run dev
   ```
-
-![quick-start](packages/renderer/public/images/quick-start.gif)
-
-## Another way is by scaffolding started
-
-```
-npm create electron-vite
-```
 
 ## Overview
 
@@ -152,15 +134,3 @@ export default {
   },
 }
 ```
-
-## Main window
-<img width="400px" src="https://raw.githubusercontent.com/caoxiemeihao/blog/main/electron-vue-vite/screenshot/electron-15.png" />
-
-## Wechat | | 请我喝杯下午茶 🥳
-
-<div style="display:flex;">
-  <img height="333px" src="https://raw.githubusercontent.com/caoxiemeihao/blog/main/assets/wechat/group/qrcode.jpg" />
-  &nbsp;&nbsp;&nbsp;&nbsp;
-  <img height="333px" src="https://raw.githubusercontent.com/caoxiemeihao/blog/main/assets/wechat/%24qrcode/%24.png" />
-</div>
-
