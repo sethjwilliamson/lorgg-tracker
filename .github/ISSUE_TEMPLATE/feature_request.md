@@ -3,8 +3,7 @@ name: Feature_Want
 about: Suggest an idea for electron-vue-vite
 title: "[Feature] the title of Feature_Want report"
 labels: feature
-assignees: ''
-
+assignees: ""
 ---
 
 #### Motivation

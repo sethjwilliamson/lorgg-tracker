@@ -3,8 +3,7 @@ name: Bug_Report
 about: Create a report to help us improve
 title: "[Bug] the title of bug report"
 labels: bug
-assignees: ''
-
+assignees: ""
 ---
 
 #### What did I do

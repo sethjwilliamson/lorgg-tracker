@@ -13,8 +13,6 @@
     "paths": {},
     "allowSyntheticDefaultImports": true,
     "skipLibCheck": true,
-    "types": [
-      "vite/client"
-    ]
+    "types": ["vite/client"]
   }
 }

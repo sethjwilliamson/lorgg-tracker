@@ -5,26 +5,25 @@
 ![GitHub stars](https://img.shields.io/github/stars/caoxiemeihao/electron-vue-vite?color=fa6470&style=flat)
 ![GitHub forks](https://img.shields.io/github/forks/caoxiemeihao/electron-vue-vite?style=flat)
 
-
 **[English](README.md) | 简体中文**
 
 🥳 `Electron` + `Vue3` + `Vite2` 整合模板 -- **结构简单，容易上手！**
 
 ## 快速开始
 
-  ```bash
-  # clone the project
-  git clone https://github.com/caoxiemeihao/electron-vue-vite.git
+```bash
+# clone the project
+git clone https://github.com/caoxiemeihao/electron-vue-vite.git
 
-  # enter the project directory
-  cd electron-vue-vite
+# enter the project directory
+cd electron-vue-vite
 
-  # install dependency
-  npm install
+# install dependency
+npm install
 
-  # develop
-  npm run dev
-  ```
+# develop
+npm run dev
+```
 
 ![quick-start](packages/renderer/public/images/quick-start.gif)
 
@@ -87,48 +86,47 @@ electron-builder 打包时候会将 dependencies 中的包打包到 app.asar 里
 
 **对于[方案 1](https://github.com/caoxiemeihao/electron-vue-vite/tree/main)，所有的 NodeJs、Electron API 可以直接在 渲染进程 中使用。**
 
-
 **对于[方案 2](https://github.com/caoxiemeihao/electron-vue-vite/tree/withoutNodeIntegration)，所有的 NodeJs、Electron API 通过 `Preload-script` 注入到 渲染进程中**
 
 您需要创建一个 context bridge，并向渲染进程暴露所需的 API。请注意，如果您的项目使用 typescript，则还需要将类型声明添加到 `Window` interface，例如：
 
-* **packages/preload/index.ts**
+- **packages/preload/index.ts**
 
   ```typescript
-  import fs from 'fs'
-  import { contextBridge, ipcRenderer } from 'electron'
+  import fs from "fs";
+  import { contextBridge, ipcRenderer } from "electron";
 
   // --------- Expose some API to Renderer-process. ---------
-  contextBridge.exposeInMainWorld('fs', fs)
-  contextBridge.exposeInMainWorld('ipcRenderer', ipcRenderer)
+  contextBridge.exposeInMainWorld("fs", fs);
+  contextBridge.exposeInMainWorld("ipcRenderer", ipcRenderer);
   ```
 
-* **packages/renderer/src/global.d.ts**
+- **packages/renderer/src/global.d.ts**
 
   ```typescript
   // Defined on the window
   interface Window {
-    fs: typeof import('fs')
-    ipcRenderer: import('electron').IpcRenderer
+    fs: typeof import("fs");
+    ipcRenderer: import("electron").IpcRenderer;
   }
   ```
 
-* **packages/renderer/src/main.ts**
+- **packages/renderer/src/main.ts**
 
   ```typescript
   // Use Electron, NodeJs API in Renderer-process
-  console.log('fs', window.fs)
-  console.log('ipcRenderer', window.ipcRenderer)
+  console.log("fs", window.fs);
+  console.log("ipcRenderer", window.ipcRenderer);
   ```
 
   ```typescript
   // Use Electron, NodeJs API in Renderer-process
-  console.log('fs', window.fs)
-  console.log('ipcRenderer', window.ipcRenderer)
+  console.log("fs", window.fs);
+  console.log("ipcRenderer", window.ipcRenderer);
   ```
 
 最后，不管是哪种方式，对于第三方 NodeJs API (例如 `sqlite3`) 你还需要在 `packages/renderer/vite.config.ts` 的 `defineConfig.plugins` 中声明它的导入方式，从而让模版能够正确识别它们。关于原理 `resolveElectron` **最好了解下**  
-👉 这里有个 `issues` [请教一下vite-renderer.config中的resolveElectron函数](https://github.com/caoxiemeihao/electron-vue-vite/issues/52)
+👉 这里有个 `issues` [请教一下 vite-renderer.config 中的 resolveElectron 函数](https://github.com/caoxiemeihao/electron-vue-vite/issues/52)
 
 ## 在主进程中使用 SerialPort，SQLite3 等 node-native addons
 
@@ -143,22 +141,20 @@ export default {
   build: {
     // built lib for Main-process, Preload-script
     lib: {
-      entry: 'index.ts',
-      formats: ['cjs'],
-      fileName: () => '[name].js',
+      entry: "index.ts",
+      formats: ["cjs"],
+      fileName: () => "[name].js",
     },
     rollupOptions: {
       // configuration here
-      external: [
-        'serialport',
-        'sqlite3',
-      ],
+      external: ["serialport", "sqlite3"],
     },
   },
-}
+};
 ```
 
 ## 运行效果
+
 <img width="400px" src="https://raw.githubusercontent.com/caoxiemeihao/blog/main/electron-vue-vite/screenshot/electron-15.png" />
 
 ## 微信 | | 请我喝杯下午茶 🥳

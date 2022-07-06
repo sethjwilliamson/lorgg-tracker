@@ -1,48 +1,54 @@
-import { Request } from 'express'
-import express from 'express'
-import { ipcMain } from 'electron'
-import cors from 'cors'
-import { Server } from 'http'
-import Store from 'electron-store'
+import { Request } from "express";
+import express from "express";
+import { ipcMain } from "electron";
+import cors from "cors";
+import { Server } from "http";
+import Store from "electron-store";
 
 const store = new Store();
 
-const expressApp = express()
+const expressApp = express();
 
 interface ReceiveTokenQueryTypes {
-  token: string
+  token: string;
 }
 
 var corsOptions = {
-  credentials: true, 
-  origin: ['http://lorgg.test', 'https://lor.gg']
-}
+  credentials: true,
+  origin: ["http://lorgg.test", "https://lor.gg"],
+};
 
-expressApp.use(cors(corsOptions))
+expressApp.use(cors(corsOptions));
 
-ipcMain.on('login', (event) => {
-  require('electron').shell.openExternal("https://lor.gg/tracker-authentication")
-  
-  var expressListener : Server
+ipcMain.on("login", (event) => {
+  require("electron").shell.openExternal(
+    "https://lor.gg/tracker-authentication"
+  );
 
-  expressApp.get('/receive-token', (req : Request<unknown, unknown, unknown, ReceiveTokenQueryTypes>) => {
-    console.log("Token Received")
+  var expressListener: Server;
 
-    store.set('token', (req.query.token))
+  expressApp.get(
+    "/receive-token",
+    (req: Request<unknown, unknown, unknown, ReceiveTokenQueryTypes>) => {
+      console.log("Token Received");
 
-    expressListener.close( () => console.log("Listener Closed") )
+      store.set("token", req.query.token);
 
-    return event.reply("token-received")
-  })
+      expressListener.close(() => console.log("Listener Closed"));
 
-  expressListener = expressApp.listen(5674, '0.0.0.0', () => console.log("Listening on Port 5674"))
-})
+      return event.reply("token-received");
+    }
+  );
 
-ipcMain.on('logout', (event) => {
-  store.delete('token')
+  expressListener = expressApp.listen(5674, "0.0.0.0", () =>
+    console.log("Listening on Port 5674")
+  );
+});
 
-  console.log("Token Removed")
+ipcMain.on("logout", (event) => {
+  store.delete("token");
 
-  return event.reply("token-revoked")
-  
-})
+  console.log("Token Removed");
+
+  return event.reply("token-revoked");
+});

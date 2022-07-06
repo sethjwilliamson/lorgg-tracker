@@ -1,9 +1,10 @@
-
 ## 22-01-27
+
 - Refactor the scripts part.
 - Remove `configs` directory.
 
 ## 21-11-11
+
 - Refactor the project. Use vite.config.ts build `Main-process`, `Preload-script` and `Renderer-process` alternative rollup.
 - Scenic `Vue>=3.2.13`, `@vue/compiler-sfc` is no longer necessary.
 - If you prefer Rollup, Use rollup branch.

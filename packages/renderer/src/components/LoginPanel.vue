@@ -1,35 +1,35 @@
 <script lang="ts">
-import { defineComponent } from 'vue'
-import { ipcRenderer } from 'electron'
-import Store from 'electron-store'
+import { defineComponent } from "vue";
+import { ipcRenderer } from "electron";
+import Store from "electron-store";
 
 const store = new Store();
 
 export default defineComponent({
-  data: function() {
+  data: function () {
     return {
-      isAuthenticated: false
-    }
+      isAuthenticated: false,
+    };
   },
-  mounted: function() {
-    ipcRenderer.on('token-received', (event) => {
-      this.isAuthenticated = true
-    })
-    ipcRenderer.on('token-revoked', (event) => {
-      this.isAuthenticated = false
-    })
+  mounted: function () {
+    ipcRenderer.on("token-received", (event) => {
+      this.isAuthenticated = true;
+    });
+    ipcRenderer.on("token-revoked", (event) => {
+      this.isAuthenticated = false;
+    });
 
-    this.isAuthenticated = store.has('token')
+    this.isAuthenticated = store.has("token");
   },
   methods: {
-    login: function() {
-      ipcRenderer.send('login')
+    login: function () {
+      ipcRenderer.send("login");
     },
-    logout: function() {
-      ipcRenderer.send('logout')
-    }
-  }
-})
+    logout: function () {
+      ipcRenderer.send("logout");
+    },
+  },
+});
 </script>
 
 <template>

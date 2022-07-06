@@ -3,8 +3,7 @@ name: Help_Wanted
 about: Confuse about the use of electron-vue-vite
 title: "[Help] the title of Help_Want report"
 labels: help wanted
-assignees: ''
-
+assignees: ""
 ---
 
 #### Describe the problem you Confuse

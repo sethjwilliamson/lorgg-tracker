@@ -2,25 +2,25 @@
 
 ## Quick Start
 
-  ```bash
-  # clone the project
-  git clone https://github.com/sethjwilliamson/lorgg-tracker.git
+```bash
+# clone the project
+git clone https://github.com/sethjwilliamson/lorgg-tracker.git
 
-  # enter the project directory
-  cd lorgg-tracker
+# enter the project directory
+cd lorgg-tracker
 
-  # install dependency
-  npm install
+# install dependency
+npm install
 
-  # develop
-  npm run dev
-  ```
+# develop
+npm run dev
+```
 
 ## Overview
 
 This is a `Vite`-integrated `Electron` template built with simplification in mind.
 
-The repo contains only the most basic files, dependencies and functionalities to ensure flexibility for various scenarios. 
+The repo contains only the most basic files, dependencies and functionalities to ensure flexibility for various scenarios.
 
 You need a basic understanding of `Electron` and `Vite` to get started. But that's not mandatory - you can learn almost all the details by reading through the source code. Trust me, this repo is not that complex. 😋
 
@@ -66,9 +66,7 @@ The template provides two methods for using the NodeJs API in the rendering proc
 1. Bypass the security constraints (**default**), located in the [main](https://github.com/caoxiemeihao/electron-vue-vite/tree/main) branch. `nodeIntegration` is enabled by default, making it easy to use.:tada:, but there are certain security risks 🚧.
 2. Inject Render by preload script, located in the [withoutNodeIntegration](https://github.com/caoxiemeihao/electron-vue-vite/tree/withoutNodeIntegration) branch. `nodeIntegration` is turned off by default, the official recommended way of electron, more secure:lock:.
 
-
 **For [1](https://github.com/caoxiemeihao/electron-vue-vite/tree/main), all NodeJs and Electron APIs can be used directly in the rendering process.**
-
 
 **For [2](https://github.com/caoxiemeihao/electron-vue-vite/tree/withoutNodeIntegration), all NodeJs, Electron APIs injected into the rendering process via `Preload-script`**
 
@@ -76,33 +74,33 @@ you need to create a context bridge and expose the APIs you need to the renderer
 
 Note that if your project uses typescript, you also need to add type declarations to the `Window` interface, for example:
 
-* **packages/preload/index.ts**
+- **packages/preload/index.ts**
 
   ```typescript
-  import fs from 'fs'
-  import { contextBridge, ipcRenderer } from 'electron'
+  import fs from "fs";
+  import { contextBridge, ipcRenderer } from "electron";
 
   // --------- Expose some API to Renderer-process. ---------
-  contextBridge.exposeInMainWorld('fs', fs)
-  contextBridge.exposeInMainWorld('ipcRenderer', ipcRenderer)
+  contextBridge.exposeInMainWorld("fs", fs);
+  contextBridge.exposeInMainWorld("ipcRenderer", ipcRenderer);
   ```
 
-* **packages/renderer/src/global.d.ts**
+- **packages/renderer/src/global.d.ts**
 
   ```typescript
   // Defined on the window
   interface Window {
-    fs: typeof import('fs')
-    ipcRenderer: import('electron').IpcRenderer
+    fs: typeof import("fs");
+    ipcRenderer: import("electron").IpcRenderer;
   }
   ```
 
-* **packages/renderer/src/main.ts**
+- **packages/renderer/src/main.ts**
 
   ```typescript
   // Use Electron, NodeJs API in Renderer-process
-  console.log('fs', window.fs)
-  console.log('ipcRenderer', window.ipcRenderer)
+  console.log("fs", window.fs);
+  console.log("ipcRenderer", window.ipcRenderer);
   ```
 
 Finally, either way, for third-party NodeJs APIs (e.g. `sqlite3`), You'll also need to declare how it was imported in `packages/renderer/vite.config.ts` `defineConfig.plugins` so that the template can recognize them correctly. 👉 reference `issues` [resolveElectron](https://github.com/caoxiemeihao/electron-vue-vite/issues/52)
@@ -120,17 +118,14 @@ export default {
   build: {
     // built lib for Main-process, Preload-script
     lib: {
-      entry: 'index.ts',
-      formats: ['cjs'],
-      fileName: () => '[name].js',
+      entry: "index.ts",
+      formats: ["cjs"],
+      fileName: () => "[name].js",
     },
     rollupOptions: {
       // configuration here
-      external: [
-        'serialport',
-        'sqlite3',
-      ],
+      external: ["serialport", "sqlite3"],
     },
   },
-}
+};
 ```
