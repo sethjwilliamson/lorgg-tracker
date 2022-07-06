@@ -1,3 +1,7 @@
 dist/
 node_modules/
+.github/
+.storybook/
+.vscode/
+.simple-git-hooks.cjs
 yarn.lock
