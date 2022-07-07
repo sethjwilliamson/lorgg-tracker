@@ -1,5 +1,6 @@
 .gitignore 
 dist/
+release/
 node_modules/ 
 .github/ 
 .storybook/ 
