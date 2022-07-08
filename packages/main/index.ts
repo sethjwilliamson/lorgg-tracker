@@ -1,4 +1,4 @@
-import { app, BrowserWindow, shell, autoUpdater } from "electron";
+import { app, BrowserWindow, shell, autoUpdater, ipcMain } from "electron";
 import { release } from "os";
 import { join } from "path";
 import "../processes/Tokens/token-controller";
@@ -20,6 +20,7 @@ if (!app.requestSingleInstanceLock()) {
 process.env["ELECTRON_DISABLE_SECURITY_WARNINGS"] = "true";
 
 let win: BrowserWindow | null = null;
+let workerWin: BrowserWindow | null = null;
 
 async function createWindow() {
   win = new BrowserWindow({
@@ -62,6 +63,27 @@ async function createWindow() {
     if (url.startsWith("https:")) shell.openExternal(url);
     return { action: "deny" };
   });
+
+  workerWin = new BrowserWindow({
+    show: true,
+    webPreferences: {
+      preload: join(__dirname, "../preload/index.cjs"),
+      nodeIntegration: true,
+      contextIsolation: false,
+      webSecurity: false,
+    },
+  });
+
+  if (app.isPackaged) {
+    workerWin.loadFile(join(__dirname, "../renderer/worker.html"));
+  } else {
+    // 🚧 Use ['ENV_NAME'] avoid vite:define plugin
+    const url = `http://${process.env["VITE_DEV_SERVER_HOST"]}:${process.env["VITE_DEV_SERVER_PORT"]}/worker.html`;
+
+    workerWin.loadURL(url);
+    workerWin.webContents.openDevTools();
+  }
+  app.commandLine.appendSwitch("disable-site-isolation-trials");
 }
 
 app.whenReady().then(createWindow);
@@ -86,4 +108,10 @@ app.on("activate", () => {
   } else {
     createWindow();
   }
+});
+
+app.on("ready", () => {
+  ipcMain.on("message-from-worker", (event, arg) => {
+    console.log("test");
+  });
 });
