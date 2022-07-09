@@ -1,6 +1,6 @@
 {
-  "name": "lorgg-tracker-test",
-  "version": "0.2.2",
+  "name": "lorgg-tracker",
+  "version": "0.2.3",
   "main": "dist/main/index.cjs",
   "author": "Seth Williamson",
   "license": "MIT",
