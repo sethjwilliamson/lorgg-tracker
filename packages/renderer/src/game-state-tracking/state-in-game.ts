@@ -38,7 +38,7 @@ export class StateInGame extends State {
 
         this.store.set("last-refresh", dayjs());
 
-        ipcRenderer.send("match-history-refreshed");
+        ipcRenderer.send("cross-renderer-comm", "match-history-refreshed");
       });
   }
 }
