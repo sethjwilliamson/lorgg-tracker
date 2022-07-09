@@ -1,5 +1,7 @@
 import { app, ipcMain } from "electron";
 import { autoUpdater } from "electron-updater";
+const Store = require("electron-store");
+const store = new Store();
 
 app.on("ready", () => {
   const updateServer = "hazel-z8ruew1oy-sethjwilliamson.vercel.app";
@@ -7,11 +9,7 @@ app.on("ready", () => {
     process.platform
   }/${app.getVersion()}`;
 
-  autoUpdater.setFeedURL({
-    provider: "generic",
-    url: url,
-    channel: "latest",
-  });
+  autoUpdater.logger = require("electron-log");
 
   autoUpdater.checkForUpdatesAndNotify();
 
@@ -28,6 +26,8 @@ app.on("ready", () => {
   });
 
   autoUpdater.on("update-downloaded", () => {
+    console.log("Quitting and Installing");
+
     autoUpdater.quitAndInstall();
   });
 });
