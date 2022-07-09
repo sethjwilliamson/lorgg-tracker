@@ -1,5 +1,5 @@
 {
-  "name": "lorgg-tracker",
+  "name": "lorgg-tracker-test",
   "version": "0.2.2",
   "main": "dist/main/index.cjs",
   "author": "Seth Williamson",
