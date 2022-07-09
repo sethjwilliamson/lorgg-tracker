@@ -1,11 +1,8 @@
-import { app, BrowserWindow, shell, autoUpdater, ipcMain } from "electron";
+import { app, BrowserWindow, shell, ipcMain } from "electron";
 import { release } from "os";
 import { join } from "path";
 import "../processes/Tokens/token-controller";
-
-const updateServer = "hazel-z8ruew1oy-sethjwilliamson.vercel.app";
-const url = `${updateServer}/update/${process.platform}/${app.getVersion()}`;
-autoUpdater.setFeedURL({ url });
+import "../processes/Updates/auto-update-controller";
 
 // Disable GPU Acceleration for Windows 7
 if (release().startsWith("6.1")) app.disableHardwareAcceleration();
