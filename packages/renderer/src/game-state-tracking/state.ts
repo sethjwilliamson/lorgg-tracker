@@ -1,6 +1,7 @@
 import axios, { AxiosError, AxiosResponse } from "axios";
 import { Context } from "./context";
 import { StateLorClosed } from "./state-lor-closed";
+import Store from "electron-store";
 
 type LocalApiEndpoint =
   | "static-decklist"
@@ -47,6 +48,11 @@ export type LocalApiResponse =
 export abstract class State {
   protected context!: Context;
   protected lorPort: string = "21337";
+  protected store: Store;
+
+  constructor() {
+    this.store = new Store();
+  }
 
   public setContext(context: Context) {
     this.context = context;
