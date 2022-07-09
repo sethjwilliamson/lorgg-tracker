@@ -2,10 +2,12 @@
 // This starter template is using Vue 3 <script setup> SFCs
 // Check out https://v3.vuejs.org/api/sfc-script-setup.html#sfc-script-setup
 import LoginPanel from "./components/LoginPanel.vue";
+import LastRefresh from "./components/LastRefresh.vue";
 </script>
 
 <template>
   <login-panel />
+  <last-refresh />
 </template>
 
 <style>
