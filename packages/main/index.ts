@@ -62,7 +62,7 @@ async function createWindow() {
   });
 
   workerWin = new BrowserWindow({
-    show: true,
+    //show: false,
     webPreferences: {
       preload: join(__dirname, "../preload/index.cjs"),
       nodeIntegration: true,
@@ -81,6 +81,10 @@ async function createWindow() {
     workerWin.webContents.openDevTools();
   }
   app.commandLine.appendSwitch("disable-site-isolation-trials");
+
+  ipcMain.on("cross-renderer-comm", (event, channel, ...args) => {
+    win?.webContents.send(channel, ...args);
+  });
 }
 
 app.whenReady().then(createWindow);
