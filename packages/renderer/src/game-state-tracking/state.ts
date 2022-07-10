@@ -2,6 +2,7 @@ import axios, { AxiosError, AxiosResponse } from "axios";
 import { Context } from "./context";
 import { StateLorClosed } from "./state-lor-closed";
 import Store from "electron-store";
+import { Deck } from "lor-deckcodes-ts";
 
 type LocalApiEndpoint =
   | "static-decklist"
@@ -11,16 +12,22 @@ type LocalApiEndpoint =
 export type StaticDecklistResponse = {
   DeckCode: String | null;
   // Object maybe can be changed to Deck from lor-deckcodes-ts
-  CardsInDeck: Object | null;
+  CardsInDeck: Deck | null;
 };
 
-type CardPositionRectangle = {
+export type CardPositionRectangle = {
   CardID: Number;
   CardCode: String;
   TopLeftX: Number;
   TopLeftY: Number;
   Width: Number;
   Height: Number;
+  LocalPlayer: Boolean;
+};
+
+export type Card = {
+  CardCode: String;
+  CardID: Number;
   LocalPlayer: Boolean;
 };
 
@@ -49,9 +56,22 @@ export abstract class State {
   protected context!: Context;
   protected lorPort: string = "21337";
   protected store: Store;
+  protected mulliganCards!: Array<Card>;
+  protected startingCards!: Array<Card>;
+  protected previousRectangles: string = "";
 
-  constructor() {
-    this.store = new Store();
+  constructor(prevState?: State) {
+    if (!prevState) {
+      this.store = new Store();
+      return;
+    }
+
+    this.context = prevState.context;
+    this.lorPort = prevState.lorPort;
+    this.store = prevState.store;
+    this.mulliganCards = prevState.mulliganCards;
+    this.startingCards = prevState.startingCards;
+    this.previousRectangles = prevState.previousRectangles;
   }
 
   public setContext(context: Context) {
@@ -87,5 +107,12 @@ export abstract class State {
     });
 
     return fetchPromise;
+  }
+
+  protected shouldSkipRectangles(data: Array<CardPositionRectangle>): Boolean {
+    let temp: string = this.previousRectangles;
+    this.previousRectangles = JSON.stringify(data);
+
+    return temp === this.previousRectangles;
   }
 }

@@ -17,7 +17,7 @@ export class StateLorClosed extends State {
         if (data.GameState === "Menus") {
           this.context.transitionTo(new StateMenus());
         } else if (data.GameState === "InProgress") {
-          this.context.transitionTo(new StateInGame());
+          this.context.transitionTo(new StateInGame(this));
         }
       }
     );

@@ -1,6 +1,6 @@
 import { AxiosResponse } from "axios";
 import { LocalApiResponse, PositionalRectanglesResponse, State } from "./state";
-import { StateInGame } from "./state-in-game";
+import { StateMulligan } from "./state-mulligan";
 
 export class StateMenus extends State {
   public afterStateChange() {}
@@ -14,7 +14,7 @@ export class StateMenus extends State {
           response as AxiosResponse<PositionalRectanglesResponse>;
 
         if (data.GameState === "InProgress") {
-          this.context.transitionTo(new StateInGame());
+          this.context.transitionTo(new StateMulligan(this));
         }
       }
     );
