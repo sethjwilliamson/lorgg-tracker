@@ -21,7 +21,6 @@ export class Context {
   }
 
   public onCall(): void {
-    console.log(this.state);
     this.state.handle();
     this.state.checkForStateChange();
   }

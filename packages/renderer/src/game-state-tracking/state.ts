@@ -16,18 +16,18 @@ export type StaticDecklistResponse = {
 };
 
 export type CardPositionRectangle = {
-  CardID: Number;
+  CardID: number;
   CardCode: String;
-  TopLeftX: Number;
-  TopLeftY: Number;
-  Width: Number;
-  Height: Number;
+  TopLeftX: number;
+  TopLeftY: number;
+  Width: number;
+  Height: number;
   LocalPlayer: Boolean;
 };
 
 export type Card = {
   CardCode: String;
-  CardID: Number;
+  CardID: number;
   LocalPlayer: Boolean;
 };
 
@@ -36,14 +36,14 @@ export type PositionalRectanglesResponse = {
   OpponentName: String | null;
   GameState: "Menus" | "InProgress";
   Screen: {
-    ScreenWidth: Number;
-    ScreenHeight: Number;
+    ScreenWidth: number;
+    ScreenHeight: number;
   };
   Rectangles: Array<CardPositionRectangle>;
 };
 
 export type GameResultResponse = {
-  GameID: Number;
+  GameID: number;
   LocalPlayerWon: Boolean;
 };
 
@@ -96,7 +96,7 @@ export abstract class State {
     let fetchPromise: Promise<AxiosResponse<LocalApiResponse>> = axios.get(
       `http://localhost:${this.lorPort}/${endpoint}`,
       {
-        timeout: 500,
+        //timeout: 500,
       }
     );
 
