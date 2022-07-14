@@ -10,6 +10,17 @@ import { StateMenus } from "./state-menus";
 import { ipcRenderer } from "electron";
 const scan = require("node-process-memory-scanner");
 
+type Timeline = {
+  self: Array<{
+    roundNumber: Number;
+    cards: Array<Card>;
+  }>;
+  opponent: Array<{
+    roundNumber: Number;
+    cards: Array<Card>;
+  }>;
+};
+
 export class StateInGame extends State {
   private cardsInHand: Array<Card> = [];
   private cardsInHandTemp: Array<Card> = [];
@@ -17,6 +28,10 @@ export class StateInGame extends State {
   private opponentCards: Array<Card> = [];
   private previousDrawCardId: number = 0;
   private roundNumber: number = 0;
+  private timeline: Timeline = {
+    self: [],
+    opponent: [],
+  };
 
   public afterStateChange() {
     this.cardsInHand = this.startingCards || [];
@@ -51,6 +66,8 @@ export class StateInGame extends State {
           console.log("Played");
           console.log(played);
 
+          this.addCardsToTimeline(played);
+
           this.cardsInHand = this.cardsInHandTemp;
         }
 
@@ -74,7 +91,9 @@ export class StateInGame extends State {
     );
   }
 
-  public beforeStateChange() {}
+  public beforeStateChange() {
+    console.log(this.timeline);
+  }
 
   private checkForDraw(
     response: PositionalRectanglesResponse,
@@ -150,6 +169,8 @@ export class StateInGame extends State {
 
     this.opponentCards = opponentCardsTemp;
 
+    this.addCardsToTimeline(opponentPlayedCards);
+
     // TODO: Remove the if
     if (opponentChangedCards.length > 0) {
       console.log("OPPONENT ACTION");
@@ -175,5 +196,25 @@ export class StateInGame extends State {
     this.roundNumber++;
 
     console.log(`ROUND ${this.roundNumber}`);
+
+    this.timeline.self.push({
+      roundNumber: this.roundNumber,
+      cards: [],
+    });
+
+    this.timeline.opponent.push({
+      roundNumber: this.roundNumber,
+      cards: [],
+    });
+  }
+
+  private addCardsToTimeline(cards: Array<Card>) {
+    for (let card of cards) {
+      this.timeline[card.LocalPlayer ? "self" : "opponent"]
+        .find((x) => x.roundNumber === this.roundNumber)
+        ?.cards.push(card);
+    }
+
+    console.log(this.timeline);
   }
 }
