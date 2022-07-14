@@ -8,13 +8,15 @@ import {
 } from "./state";
 import { StateMenus } from "./state-menus";
 import { ipcRenderer } from "electron";
+const scan = require("node-process-memory-scanner");
 
 export class StateInGame extends State {
   private cardsInHand: Array<Card> = [];
   private cardsInHandTemp: Array<Card> = [];
   private cardsPendingPlay: Array<Card> = [];
   private opponentCards: Array<Card> = [];
-  private previousDrawCardId: Number = 0;
+  private previousDrawCardId: number = 0;
+  private roundNumber: number = 0;
 
   public afterStateChange() {
     this.cardsInHand = this.startingCards || [];
@@ -51,6 +53,10 @@ export class StateInGame extends State {
 
           this.cardsInHand = this.cardsInHandTemp;
         }
+
+        if (didDraw) {
+          this.checkForRoundChange();
+        }
       }
     );
   }
@@ -85,6 +91,7 @@ export class StateInGame extends State {
       ) {
         this.previousDrawCardId = rectangle.CardID;
         console.log("DRAW");
+
         return {
           CardCode: rectangle.CardCode,
           CardID: rectangle.CardID,
@@ -151,5 +158,22 @@ export class StateInGame extends State {
     }
 
     return false;
+  }
+
+  private async checkForRoundChange() {
+    const firstMatch = scan(
+      "Legends of Runeterra",
+      `ROUND (${this.roundNumber + 1})(?![0-9]+)`
+    );
+
+    console.log(firstMatch);
+
+    if (firstMatch === "MATCH NOT FOUND") {
+      return;
+    }
+
+    this.roundNumber++;
+
+    console.log(`ROUND ${this.roundNumber}`);
   }
 }
