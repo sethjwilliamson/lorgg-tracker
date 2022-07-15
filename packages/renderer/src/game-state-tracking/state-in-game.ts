@@ -57,7 +57,21 @@ export class StateInGame extends State {
 
         let didDraw = this.checkForDraw(data, data.Rectangles);
 
+        let isNewRound = didDraw && this.checkForRoundChange();
+
         if (didDraw || this.checkEnemyAction(data.Rectangles)) {
+          // Update Round Added to Hand
+          this.cardsInHandTemp = this.cardsInHandTemp.map((x) => {
+            return {
+              CardCode: x.CardCode,
+              CardID: x.CardID,
+              LocalPlayer: x.LocalPlayer,
+              RoundAddedToHand:
+                this.cardsInHand.find((y) => y.CardID === x.CardID)
+                  ?.RoundAddedToHand || this.roundNumber,
+            };
+          });
+
           let played = this.cardsInHand.filter(({ CardID }) => {
             return (
               this.cardsInHandTemp.map((x) => x.CardID).indexOf(CardID) == -1
@@ -67,13 +81,12 @@ export class StateInGame extends State {
           console.log("Played");
           console.log(played);
 
-          this.addCardsToTimeline(played);
+          this.addCardsToTimeline(
+            played,
+            isNewRound ? this.roundNumber - 1 : this.roundNumber
+          );
 
           this.cardsInHand = this.cardsInHandTemp;
-        }
-
-        if (didDraw) {
-          this.checkForRoundChange();
         }
       }
     );
@@ -171,7 +184,7 @@ export class StateInGame extends State {
 
     this.opponentCards = opponentCardsTemp;
 
-    this.addCardsToTimeline(opponentPlayedCards);
+    this.addCardsToTimeline(opponentPlayedCards, this.roundNumber);
 
     // TODO: Remove the if
     if (opponentChangedCards.length > 0) {
@@ -183,7 +196,7 @@ export class StateInGame extends State {
     return false;
   }
 
-  private async checkForRoundChange() {
+  private checkForRoundChange(): boolean {
     const firstMatch = scan(
       "Legends of Runeterra",
       `ROUND (${this.roundNumber + 1})(?![0-9]+)`
@@ -192,7 +205,7 @@ export class StateInGame extends State {
     console.log(firstMatch);
 
     if (firstMatch === "MATCH NOT FOUND") {
-      return;
+      return false;
     }
 
     this.roundNumber++;
@@ -208,14 +221,16 @@ export class StateInGame extends State {
       roundNumber: this.roundNumber,
       cards: [],
     });
+
+    return true;
   }
 
-  private addCardsToTimeline(cards: Array<Card>) {
+  private addCardsToTimeline(cards: Array<Card>, roundNumber: number) {
     var test = false;
     for (let card of cards) {
       test = true;
       this.timeline[card.LocalPlayer ? "self" : "opponent"]
-        .find((x) => x.roundNumber === this.roundNumber)
+        .find((x) => x.roundNumber === roundNumber)
         ?.cards.push(card);
     }
 
