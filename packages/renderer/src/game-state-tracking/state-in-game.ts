@@ -5,6 +5,7 @@ import {
   LocalApiResponse,
   PositionalRectanglesResponse,
   State,
+  LocalCard,
 } from "./state";
 import { StateMenus } from "./state-menus";
 import { ipcRenderer } from "electron";
@@ -13,7 +14,7 @@ const scan = require("node-process-memory-scanner");
 type Timeline = {
   self: Array<{
     roundNumber: Number;
-    cards: Array<Card>;
+    cards: Array<Card | LocalCard>;
   }>;
   opponent: Array<{
     roundNumber: Number;
@@ -22,9 +23,9 @@ type Timeline = {
 };
 
 export class StateInGame extends State {
-  private cardsInHand: Array<Card> = [];
-  private cardsInHandTemp: Array<Card> = [];
-  private cardsPendingPlay: Array<Card> = [];
+  private cardsInHand: Array<LocalCard> = [];
+  private cardsInHandTemp: Array<LocalCard> = [];
+  private cardsPendingPlay: Array<LocalCard> = [];
   private opponentCards: Array<Card> = [];
   private previousDrawCardId: number = 0;
   private roundNumber: number = 0;
@@ -142,6 +143,7 @@ export class StateInGame extends State {
           CardCode: x.CardCode,
           CardID: x.CardID,
           LocalPlayer: x.LocalPlayer,
+          RoundAddedToHand: this.roundNumber,
         };
       });
   }
@@ -209,12 +211,16 @@ export class StateInGame extends State {
   }
 
   private addCardsToTimeline(cards: Array<Card>) {
+    var test = false;
     for (let card of cards) {
+      test = true;
       this.timeline[card.LocalPlayer ? "self" : "opponent"]
         .find((x) => x.roundNumber === this.roundNumber)
         ?.cards.push(card);
     }
 
-    console.log(this.timeline);
+    if (test) {
+      console.log(this.timeline);
+    }
   }
 }

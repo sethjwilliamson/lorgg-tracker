@@ -31,6 +31,10 @@ export type Card = {
   LocalPlayer: Boolean;
 };
 
+export interface LocalCard extends Card {
+  RoundAddedToHand: number;
+}
+
 export type PositionalRectanglesResponse = {
   PlayerName: String | null;
   OpponentName: String | null;
@@ -56,8 +60,8 @@ export abstract class State {
   protected context!: Context;
   protected lorPort: string = "21337";
   protected store: Store;
-  protected mulliganCards!: Array<Card>;
-  protected startingCards!: Array<Card>;
+  protected mulliganCards!: Array<LocalCard>;
+  protected startingCards!: Array<LocalCard>;
   protected previousRectangles: string = "";
 
   constructor(prevState?: State) {

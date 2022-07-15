@@ -67,14 +67,22 @@ export class StateMulligan extends State {
           CardCode: x.CardCode,
           CardID: x.CardID,
           LocalPlayer: x.LocalPlayer,
+          RoundAddedToHand: 1,
         };
       });
   }
 
   private updateStartingCards(rectangles: Array<CardPositionRectangle>) {
-    this.startingCards = rectangles.filter(
-      (x) => x.LocalPlayer && x.CardCode !== "face"
-    );
+    this.startingCards = rectangles
+      .filter((x) => x.LocalPlayer && x.CardCode !== "face")
+      .map((x) => {
+        return {
+          CardCode: x.CardCode,
+          CardID: x.CardID,
+          LocalPlayer: x.LocalPlayer,
+          RoundAddedToHand: 1,
+        };
+      });
   }
 
   public beforeStateChange() {
@@ -87,6 +95,7 @@ export class StateMulligan extends State {
           this.context.transitionTo(new StateMenus());
           return;
         }
+        /*
 
         this.startingCards = data.Rectangles.filter(
           (x) => x.LocalPlayer && x.CardCode !== "face"
@@ -95,8 +104,10 @@ export class StateMulligan extends State {
             CardCode: x.CardCode,
             CardID: x.CardID,
             LocalPlayer: x.LocalPlayer,
+
           };
         });
+        */
       }
     );
   }
