@@ -9226,6 +9226,13 @@ node-process-memory-scanner@^0.1.2:
     bindings "^1.2.1"
     node-addon-api "^1.7.1"
 
+"node-process-memory-scanner@git+https://github.com/sethjwilliamson/node-memory-process-scanner":
+  version "0.1.2"
+  resolved "git+https://github.com/sethjwilliamson/node-memory-process-scanner#0942b87ee660606a4a366bf61707e449257a1397"
+  dependencies:
+    bindings "^1.2.1"
+    node-addon-api "^1.7.1"
+
 node-releases@^2.0.5:
   version "2.0.6"
   resolved "https://registry.yarnpkg.com/node-releases/-/node-releases-2.0.6.tgz#8a7088c63a55e493845683ebf3c828d8c51c5503"
