@@ -32,7 +32,7 @@ export type Card = {
 };
 
 export interface LocalCard extends Card {
-  RoundAddedToHand: number;
+  RoundAddedToHand: number | null;
 }
 
 export type PositionalRectanglesResponse = {

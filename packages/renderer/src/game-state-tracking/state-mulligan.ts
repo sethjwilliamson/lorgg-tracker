@@ -95,19 +95,6 @@ export class StateMulligan extends State {
           this.context.transitionTo(new StateMenus());
           return;
         }
-        /*
-
-        this.startingCards = data.Rectangles.filter(
-          (x) => x.LocalPlayer && x.CardCode !== "face"
-        ).map((x) => {
-          return {
-            CardCode: x.CardCode,
-            CardID: x.CardID,
-            LocalPlayer: x.LocalPlayer,
-
-          };
-        });
-        */
       }
     );
   }

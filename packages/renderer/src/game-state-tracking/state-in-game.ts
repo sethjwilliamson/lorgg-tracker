@@ -14,7 +14,7 @@ const scan = require("node-process-memory-scanner");
 type Timeline = {
   self: Array<{
     roundNumber: Number;
-    cards: Array<Card | LocalCard>;
+    cards: Array<LocalCard>;
   }>;
   opponent: Array<{
     roundNumber: Number;
@@ -25,14 +25,17 @@ type Timeline = {
 export class StateInGame extends State {
   private cardsInHand: Array<LocalCard> = [];
   private cardsInHandTemp: Array<LocalCard> = [];
-  private cardsPendingPlay: Array<LocalCard> = [];
+  private cardsPendingPlay: Array<LocalCard> = []; // Should only be needed for cases like discard
   private opponentCards: Array<Card> = [];
   private previousDrawCardId: number = 0;
   private roundNumber: number = 0;
+  private isCheckingRound: boolean = false;
   private timeline: Timeline = {
     self: [],
     opponent: [],
   };
+  private cardsPlayedThisRoundSelf: Array<LocalCard> = [];
+  private cardsPlayedThisRoundOpponent: Array<Card> = [];
 
   public afterStateChange() {
     this.cardsInHand = this.startingCards || [];
@@ -55,41 +58,45 @@ export class StateInGame extends State {
 
         this.updateHand(data, data.Rectangles);
 
-        let didDraw = this.checkForDraw(data, data.Rectangles);
+        let cardDrawn = this.checkForDraw(data, data.Rectangles);
 
-        let isNewRound = didDraw && this.checkForRoundChange();
-
-        if (didDraw || this.checkEnemyAction(data.Rectangles)) {
+        if (cardDrawn || this.checkEnemyAction(data.Rectangles)) {
           // Update Round Added to Hand
-          this.cardsInHandTemp = this.cardsInHandTemp.map((x) => {
-            return {
-              CardCode: x.CardCode,
-              CardID: x.CardID,
-              LocalPlayer: x.LocalPlayer,
-              RoundAddedToHand:
-                this.cardsInHand.find((y) => y.CardID === x.CardID)
-                  ?.RoundAddedToHand || this.roundNumber,
-            };
-          });
+          this.updateCardsPlayedThisRound(cardDrawn);
+        }
 
-          let played = this.cardsInHand.filter(({ CardID }) => {
-            return (
-              this.cardsInHandTemp.map((x) => x.CardID).indexOf(CardID) == -1
-            );
-          });
-
-          console.log("Played");
-          console.log(played);
-
-          this.addCardsToTimeline(
-            played,
-            isNewRound ? this.roundNumber - 1 : this.roundNumber
-          );
-
-          this.cardsInHand = this.cardsInHandTemp;
+        if (cardDrawn) {
+          this.checkForRoundChange();
         }
       }
     );
+  }
+
+  private updateCardsPlayedThisRound(cardDrawn: boolean) {
+    this.cardsInHandTemp = this.cardsInHandTemp.map((x) => {
+      let currentRound =
+        this.isCheckingRound || cardDrawn ? null : this.roundNumber;
+
+      return {
+        CardCode: x.CardCode,
+        CardID: x.CardID,
+        LocalPlayer: x.LocalPlayer,
+        RoundAddedToHand:
+          this.cardsInHand.find((y) => y.CardID === x.CardID)
+            ?.RoundAddedToHand || currentRound,
+      };
+    });
+
+    let played = this.cardsInHand.filter(({ CardID }) => {
+      return this.cardsInHandTemp.map((x) => x.CardID).indexOf(CardID) == -1;
+    });
+
+    console.log("Played");
+    console.log(played);
+
+    this.addCardsToTimeline(played);
+
+    this.cardsInHand = this.cardsInHandTemp;
   }
 
   public checkForStateChange() {
@@ -106,13 +113,15 @@ export class StateInGame extends State {
   }
 
   public beforeStateChange() {
+    this.addTempToTimeline(false);
+
     console.log(this.timeline);
   }
 
   private checkForDraw(
     response: PositionalRectanglesResponse,
     rectangles: Array<CardPositionRectangle>
-  ): Card | null {
+  ): boolean {
     for (let rectangle of rectangles) {
       if (
         rectangle.Width / rectangle.Height > 0.68 &&
@@ -125,16 +134,20 @@ export class StateInGame extends State {
         this.previousDrawCardId = rectangle.CardID;
         console.log("DRAW");
 
-        return {
+        this.onDraw({
           CardCode: rectangle.CardCode,
           CardID: rectangle.CardID,
           LocalPlayer: rectangle.LocalPlayer,
-        };
+        });
+
+        return true;
       }
     }
 
-    return null;
+    return false;
   }
+
+  private onDraw(card: Card) {}
 
   private updateHand(
     response: PositionalRectanglesResponse,
@@ -156,7 +169,7 @@ export class StateInGame extends State {
           CardCode: x.CardCode,
           CardID: x.CardID,
           LocalPlayer: x.LocalPlayer,
-          RoundAddedToHand: this.roundNumber,
+          RoundAddedToHand: null,
         };
       });
   }
@@ -182,60 +195,113 @@ export class StateInGame extends State {
       })
     );
 
+    this.addCardsToTimeline(opponentPlayedCards);
+
     this.opponentCards = opponentCardsTemp;
 
-    this.addCardsToTimeline(opponentPlayedCards, this.roundNumber);
-
-    // TODO: Remove the if
-    if (opponentChangedCards.length > 0) {
-      console.log("OPPONENT ACTION");
-      console.log(opponentChangedCards);
-      return true;
-    }
-
-    return false;
+    return opponentChangedCards.length > 0;
   }
 
-  private checkForRoundChange(): boolean {
-    const firstMatch = scan(
-      "Legends of Runeterra",
-      `ROUND (${this.roundNumber + 1})(?![0-9]+)`
+  private checkForRoundChange(): void {
+    console.log("START ROUND SEARCH");
+    this.isCheckingRound = true;
+    scan("Legends of Runeterra", `ROUND (${this.roundNumber + 1})`).then(
+      (response: string) => {
+        this.isCheckingRound = false;
+
+        this.onRoundCheckDone(response);
+      }
     );
 
-    console.log(firstMatch);
-
-    if (firstMatch === "MATCH NOT FOUND") {
-      return false;
-    }
-
-    this.roundNumber++;
-
-    console.log(`ROUND ${this.roundNumber}`);
-
-    this.timeline.self.push({
-      roundNumber: this.roundNumber,
-      cards: [],
-    });
-
-    this.timeline.opponent.push({
-      roundNumber: this.roundNumber,
-      cards: [],
-    });
-
-    return true;
+    console.log("DURING ROUNCH SEARCH");
   }
 
-  private addCardsToTimeline(cards: Array<Card>, roundNumber: number) {
-    var test = false;
-    for (let card of cards) {
-      test = true;
-      this.timeline[card.LocalPlayer ? "self" : "opponent"]
-        .find((x) => x.roundNumber === roundNumber)
+  private onRoundCheckDone(response: string): void {
+    let isNewRound =
+      response !== "MATCH NOT FOUND" && !response.includes("ERROR");
+
+    if (isNewRound) {
+      this.roundNumber++;
+
+      this.timeline.self.push({
+        roundNumber: this.roundNumber,
+        cards: [],
+      });
+
+      this.timeline.opponent.push({
+        roundNumber: this.roundNumber,
+        cards: [],
+      });
+    }
+
+    this.addTempToTimeline(isNewRound);
+  }
+
+  private addTempToTimeline(isNewRound: boolean) {
+    let selfTimelineThisRoundCards = this.timeline.self.find(
+      (x) => x.roundNumber === this.roundNumber
+    )?.cards as Array<LocalCard>;
+
+    for (let card of this.cardsPlayedThisRoundSelf) {
+      selfTimelineThisRoundCards.push(card);
+    }
+
+    for (let card of this.cardsPlayedThisRoundOpponent) {
+      this.timeline.opponent
+        .find((x) => x.roundNumber === this.roundNumber)
         ?.cards.push(card);
     }
 
-    if (test) {
+    this.cardsPlayedThisRoundSelf = [];
+    this.cardsPlayedThisRoundOpponent = [];
+
+    for (let card of this.timeline.self.find(
+      (x) => x.roundNumber === this.roundNumber
+    )?.cards as Array<LocalCard>) {
+      console.log(card.RoundAddedToHand);
+      if (card.RoundAddedToHand === null) {
+        console.log(card);
+        card.RoundAddedToHand = this.roundNumber;
+        console.log(card);
+      }
+    }
+
+    for (let card of this.timeline.self.find(
+      (x) => x.roundNumber === this.roundNumber - 1
+    )?.cards as Array<LocalCard>) {
+      console.log("PREVIOUS ROUND");
+      console.log(card.RoundAddedToHand);
+      if (card.RoundAddedToHand === null) {
+        console.log(card);
+        card.RoundAddedToHand = this.roundNumber - 1;
+        console.log(card);
+      }
+    }
+
+    // TODO: Remove this
+    if (isNewRound) {
       console.log(this.timeline);
+    }
+  }
+
+  private addCardsToTimeline(cards: Array<Card | LocalCard>) {
+    if (this.isCheckingRound) {
+      return this.addCardsToTempTimeline(cards);
+    }
+
+    for (let card of cards) {
+      this.timeline[card.LocalPlayer ? "self" : "opponent"]
+        .find((x) => x.roundNumber === this.roundNumber)
+        ?.cards.push(card);
+    }
+  }
+
+  private addCardsToTempTimeline(cards: Array<Card | LocalCard>) {
+    for (let card of cards) {
+      (card.LocalPlayer
+        ? this.cardsPlayedThisRoundSelf
+        : this.cardsPlayedThisRoundOpponent
+      ).push(card);
     }
   }
 }
