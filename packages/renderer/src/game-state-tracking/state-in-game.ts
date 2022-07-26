@@ -30,7 +30,7 @@ export class StateInGame extends State {
   private previousDrawCardId: number = 0;
   private roundNumber: number = 0;
   private isCheckingRound: boolean = false;
-  private drawnCardIds: Array<number> = [];
+  private drawnCards: Array<Card> = [];
   private timeline: Timeline = {
     self: [],
     opponent: [],
@@ -43,9 +43,9 @@ export class StateInGame extends State {
 
     console.log(this.startingCards);
     for (let card of this.startingCards) {
-      this.drawnCardIds.push(card.CardID);
+      this.drawnCards.push(card);
     }
-    console.log(this.drawnCardIds);
+    console.log(this.drawnCards);
   }
 
   public handle() {
@@ -91,7 +91,7 @@ export class StateInGame extends State {
         RoundAddedToHand:
           this.cardsInHand.find((y) => y.CardID === x.CardID)
             ?.RoundAddedToHand || currentRound,
-        wasDrawn: this.drawnCardIds.includes(x.CardID),
+        wasDrawn: this.drawnCards.some((y) => y.CardID === x.CardID),
       };
     });
 
@@ -156,7 +156,7 @@ export class StateInGame extends State {
   }
 
   private onDraw(card: Card) {
-    this.drawnCardIds.push(card.CardID);
+    this.drawnCards.push(card);
 
     // Update quantity of cards in deck
   }
@@ -182,7 +182,7 @@ export class StateInGame extends State {
           CardID: x.CardID,
           LocalPlayer: x.LocalPlayer,
           RoundAddedToHand: null,
-          wasDrawn: this.drawnCardIds.includes(x.CardID),
+          wasDrawn: this.drawnCards.some((y) => y.CardID === x.CardID),
         };
       });
   }
