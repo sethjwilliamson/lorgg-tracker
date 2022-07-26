@@ -10,14 +10,13 @@ type LocalApiEndpoint =
   | "game-result";
 
 export type StaticDecklistResponse = {
-  DeckCode: String | null;
-  // Object maybe can be changed to Deck from lor-deckcodes-ts
-  CardsInDeck: Deck | null;
+  DeckCode: string | null;
+  CardsInDeck: { [key: string]: number } | null;
 };
 
 export type CardPositionRectangle = {
   CardID: number;
-  CardCode: String;
+  CardCode: string;
   TopLeftX: number;
   TopLeftY: number;
   Width: number;
@@ -26,7 +25,7 @@ export type CardPositionRectangle = {
 };
 
 export type Card = {
-  CardCode: String;
+  CardCode: string;
   CardID: number;
   LocalPlayer: Boolean;
 };
@@ -37,8 +36,8 @@ export interface LocalCard extends Card {
 }
 
 export type PositionalRectanglesResponse = {
-  PlayerName: String | null;
-  OpponentName: String | null;
+  PlayerName: string | null;
+  OpponentName: string | null;
   GameState: "Menus" | "InProgress";
   Screen: {
     ScreenWidth: number;

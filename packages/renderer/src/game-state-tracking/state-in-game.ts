@@ -6,6 +6,7 @@ import {
   PositionalRectanglesResponse,
   State,
   LocalCard,
+  StaticDecklistResponse,
 } from "./state";
 import { StateMenus } from "./state-menus";
 import { ipcRenderer } from "electron";
@@ -37,6 +38,7 @@ export class StateInGame extends State {
   };
   private cardsPlayedThisRoundSelf: Array<LocalCard> = [];
   private cardsPlayedThisRoundOpponent: Array<Card> = [];
+  private decklist!: { [key: string]: number };
 
   public afterStateChange() {
     this.cardsInHand = this.startingCards || [];
@@ -46,6 +48,20 @@ export class StateInGame extends State {
       this.drawnCards.push(card);
     }
     console.log(this.drawnCards);
+
+    this.callLocalApiEndpoint("static-decklist").then(
+      (response: AxiosResponse<LocalApiResponse>) => {
+        const { data } = response as AxiosResponse<StaticDecklistResponse>;
+
+        if (data.CardsInDeck === null) {
+          console.error("data.CardsInDeck === null");
+          this.decklist = {};
+          return;
+        }
+
+        this.decklist = data.CardsInDeck;
+      }
+    );
   }
 
   public handle() {
@@ -158,7 +174,18 @@ export class StateInGame extends State {
   private onDraw(card: Card) {
     this.drawnCards.push(card);
 
-    // Update quantity of cards in deck
+    if (!(card.CardCode in this.decklist)) {
+      return;
+    }
+    console.log(this.decklist);
+
+    console.log(`DRAW ONE ${card.CardCode}`);
+
+    this.decklist[card.CardCode]--;
+
+    console.log(this.decklist);
+
+    // TODO: ipcRenderer: Update quantity of cards in deck
   }
 
   private updateHand(
