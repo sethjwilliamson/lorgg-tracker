@@ -14,11 +14,11 @@ const scan = require("node-process-memory-scanner");
 type Timeline = {
   self: Array<{
     roundNumber: Number;
-    cards: Array<LocalCard>;
+    playedCards: Array<LocalCard>;
   }>;
   opponent: Array<{
     roundNumber: Number;
-    cards: Array<Card>;
+    playedCards: Array<Card>;
   }>;
 };
 
@@ -30,6 +30,7 @@ export class StateInGame extends State {
   private previousDrawCardId: number = 0;
   private roundNumber: number = 0;
   private isCheckingRound: boolean = false;
+  private drawnCardIds: Array<number> = [];
   private timeline: Timeline = {
     self: [],
     opponent: [],
@@ -39,6 +40,12 @@ export class StateInGame extends State {
 
   public afterStateChange() {
     this.cardsInHand = this.startingCards || [];
+
+    console.log(this.startingCards);
+    for (let card of this.startingCards) {
+      this.drawnCardIds.push(card.CardID);
+    }
+    console.log(this.drawnCardIds);
   }
 
   public handle() {
@@ -84,6 +91,7 @@ export class StateInGame extends State {
         RoundAddedToHand:
           this.cardsInHand.find((y) => y.CardID === x.CardID)
             ?.RoundAddedToHand || currentRound,
+        wasDrawn: this.drawnCardIds.includes(x.CardID),
       };
     });
 
@@ -147,7 +155,11 @@ export class StateInGame extends State {
     return false;
   }
 
-  private onDraw(card: Card) {}
+  private onDraw(card: Card) {
+    this.drawnCardIds.push(card.CardID);
+
+    // Update quantity of cards in deck
+  }
 
   private updateHand(
     response: PositionalRectanglesResponse,
@@ -170,6 +182,7 @@ export class StateInGame extends State {
           CardID: x.CardID,
           LocalPlayer: x.LocalPlayer,
           RoundAddedToHand: null,
+          wasDrawn: this.drawnCardIds.includes(x.CardID),
         };
       });
   }
@@ -225,12 +238,12 @@ export class StateInGame extends State {
 
       this.timeline.self.push({
         roundNumber: this.roundNumber,
-        cards: [],
+        playedCards: [],
       });
 
       this.timeline.opponent.push({
         roundNumber: this.roundNumber,
-        cards: [],
+        playedCards: [],
       });
     }
 
@@ -240,7 +253,7 @@ export class StateInGame extends State {
   private addTempToTimeline(isNewRound: boolean) {
     let selfTimelineThisRoundCards = this.timeline.self.find(
       (x) => x.roundNumber === this.roundNumber
-    )?.cards as Array<LocalCard>;
+    )?.playedCards as Array<LocalCard>;
 
     for (let card of this.cardsPlayedThisRoundSelf) {
       selfTimelineThisRoundCards.push(card);
@@ -249,7 +262,7 @@ export class StateInGame extends State {
     for (let card of this.cardsPlayedThisRoundOpponent) {
       this.timeline.opponent
         .find((x) => x.roundNumber === this.roundNumber)
-        ?.cards.push(card);
+        ?.playedCards.push(card);
     }
 
     this.cardsPlayedThisRoundSelf = [];
@@ -257,7 +270,7 @@ export class StateInGame extends State {
 
     for (let card of this.timeline.self.find(
       (x) => x.roundNumber === this.roundNumber
-    )?.cards as Array<LocalCard>) {
+    )?.playedCards as Array<LocalCard>) {
       console.log(card.RoundAddedToHand);
       if (card.RoundAddedToHand === null) {
         console.log(card);
@@ -266,9 +279,13 @@ export class StateInGame extends State {
       }
     }
 
+    if (this.roundNumber <= 1) {
+      return;
+    }
+
     for (let card of this.timeline.self.find(
       (x) => x.roundNumber === this.roundNumber - 1
-    )?.cards as Array<LocalCard>) {
+    )?.playedCards as Array<LocalCard>) {
       console.log("PREVIOUS ROUND");
       console.log(card.RoundAddedToHand);
       if (card.RoundAddedToHand === null) {
@@ -292,7 +309,7 @@ export class StateInGame extends State {
     for (let card of cards) {
       this.timeline[card.LocalPlayer ? "self" : "opponent"]
         .find((x) => x.roundNumber === this.roundNumber)
-        ?.cards.push(card);
+        ?.playedCards.push(card);
     }
   }
 

@@ -33,6 +33,7 @@ export type Card = {
 
 export interface LocalCard extends Card {
   RoundAddedToHand: number | null;
+  wasDrawn: Boolean;
 }
 
 export type PositionalRectanglesResponse = {
