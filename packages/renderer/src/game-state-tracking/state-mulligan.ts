@@ -68,6 +68,7 @@ export class StateMulligan extends State {
           CardID: x.CardID,
           LocalPlayer: x.LocalPlayer,
           RoundAddedToHand: 1,
+          wasDrawn: true,
         };
       });
   }
@@ -81,6 +82,7 @@ export class StateMulligan extends State {
           CardID: x.CardID,
           LocalPlayer: x.LocalPlayer,
           RoundAddedToHand: 1,
+          wasDrawn: true,
         };
       });
   }
