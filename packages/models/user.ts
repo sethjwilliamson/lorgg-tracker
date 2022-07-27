@@ -1,5 +1,3 @@
-import { compileScript } from "@vue/compiler-sfc";
-import { app } from "electron";
 import { DataTypes, Model } from "sequelize";
 import { getSequelizeInstance } from "./sequelize";
 
@@ -10,6 +8,8 @@ export class User extends Model {
   declare displayName: string;
   declare tagLine: string;
   declare server: string;
+  declare createdAt: Date;
+  declare updatedAt: Date;
 }
 
 User.init(
@@ -25,26 +25,23 @@ User.init(
       type: DataTypes.STRING,
       allowNull: false,
       unique: "users_display_name_tag_line_server_index",
-      field: "display_name",
     },
     tagLine: {
       type: DataTypes.STRING,
       allowNull: false,
       unique: "users_display_name_tag_line_server_index",
-      field: "tag_line",
     },
     server: {
       type: DataTypes.STRING,
       allowNull: false,
       unique: "users_display_name_tag_line_server_index",
-      field: "server",
     },
   },
   {
-    // Other model options go here
-    sequelize, // We need to pass the connection instance
-    modelName: "User", // We need to choose the model name
+    sequelize,
+    modelName: "User",
+    underscored: true,
   }
 );
 
-User.sync();
+User.sync({ alter: true });
