@@ -2,6 +2,7 @@ import { app } from "electron";
 import { Sequelize } from "sequelize";
 
 import "./user";
+import "./matchItem";
 
 export function getSequelizeInstance(): Sequelize {
   return new Sequelize({
