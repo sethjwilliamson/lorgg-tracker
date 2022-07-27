@@ -18,7 +18,6 @@ export class MatchItem extends Model {
 
 MatchItem.init(
   {
-    // Model attributes are defined here
     id: {
       type: DataTypes.BIGINT,
       autoIncrement: true,

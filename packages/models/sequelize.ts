@@ -3,6 +3,7 @@ import { Sequelize } from "sequelize";
 
 import "./user";
 import "./matchItem";
+import "./matchPlayer";
 
 export function getSequelizeInstance(): Sequelize {
   return new Sequelize({
