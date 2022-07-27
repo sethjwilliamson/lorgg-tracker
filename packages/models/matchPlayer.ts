@@ -14,7 +14,7 @@ export class MatchPlayer extends Model {
 MatchPlayer.init(
   {
     id: {
-      type: DataTypes.BIGINT,
+      type: DataTypes.BIGINT.UNSIGNED,
       autoIncrement: true,
       allowNull: false,
       primaryKey: true,

@@ -19,7 +19,7 @@ export class MatchItem extends Model {
 MatchItem.init(
   {
     id: {
-      type: DataTypes.BIGINT,
+      type: DataTypes.BIGINT.UNSIGNED,
       autoIncrement: true,
       allowNull: false,
       primaryKey: true,

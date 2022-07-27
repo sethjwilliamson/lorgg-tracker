@@ -18,7 +18,7 @@ export class CardItem extends Model {
 CardItem.init(
   {
     id: {
-      type: DataTypes.BIGINT,
+      type: DataTypes.BIGINT.UNSIGNED,
       autoIncrement: true,
       allowNull: false,
       primaryKey: true,
@@ -37,15 +37,15 @@ CardItem.init(
       allowNull: false,
     },
     attack: {
-      type: DataTypes.NUMBER,
+      type: DataTypes.TINYINT.UNSIGNED,
       allowNull: false,
     },
     health: {
-      type: DataTypes.NUMBER,
+      type: DataTypes.TINYINT.UNSIGNED,
       allowNull: false,
     },
     cost: {
-      type: DataTypes.NUMBER,
+      type: DataTypes.TINYINT.UNSIGNED,
       allowNull: false,
     },
   },

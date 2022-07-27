@@ -32,7 +32,7 @@ ArchetypeTag.init(
       unique: "archetype_tags_tag_operator_value_quantity_archetype_id_unique",
     },
     quantity: {
-      type: DataTypes.NUMBER,
+      type: DataTypes.TINYINT.UNSIGNED,
       allowNull: true,
       unique: "archetype_tags_tag_operator_value_quantity_archetype_id_unique",
     },
