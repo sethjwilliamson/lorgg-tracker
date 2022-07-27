@@ -5,6 +5,7 @@ import "./user";
 import "./matchItem";
 import "./matchPlayer";
 import "./cardItem";
+import "./archetype";
 
 export function getSequelizeInstance(): Sequelize {
   return new Sequelize({
