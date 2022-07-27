@@ -4,6 +4,7 @@ import { Sequelize } from "sequelize";
 import "./user";
 import "./matchItem";
 import "./matchPlayer";
+import "./cardItem";
 
 export function getSequelizeInstance(): Sequelize {
   return new Sequelize({
