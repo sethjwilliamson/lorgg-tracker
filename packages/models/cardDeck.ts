@@ -13,7 +13,7 @@ export class CardDeck extends Model {
 CardDeck.init(
   {
     id: {
-      type: DataTypes.BIGINT,
+      type: DataTypes.BIGINT.UNSIGNED,
       autoIncrement: true,
       allowNull: false,
       primaryKey: true,
