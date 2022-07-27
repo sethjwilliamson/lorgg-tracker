@@ -27,6 +27,7 @@ CardDeck.init(
   },
   {
     sequelize,
+    timestamps: false,
     modelName: "CardDeck",
     underscored: true,
   }

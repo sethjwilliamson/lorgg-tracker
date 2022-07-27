@@ -6,6 +6,7 @@ import { CardItem } from "./cardItem";
 import { Deck } from "./deck";
 import { MatchItem } from "./matchItem";
 import { MatchPlayer } from "./matchPlayer";
+import { Timeline } from "./timeline";
 import { User } from "./user";
 
 ArchetypeTag.belongsTo(Archetype);
@@ -28,4 +29,5 @@ Deck.hasMany(MatchPlayer);
 MatchPlayer.belongsTo(User);
 User.hasMany(MatchPlayer);
 
-MatchPlayer.sync({ force: true });
+Timeline.belongsTo(MatchPlayer);
+MatchPlayer.hasMany(Timeline);
