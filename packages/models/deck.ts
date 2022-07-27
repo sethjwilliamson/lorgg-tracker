@@ -30,5 +30,3 @@ Deck.init(
     underscored: true,
   }
 );
-
-Deck.sync({ alter: true });

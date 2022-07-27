@@ -43,5 +43,3 @@ User.init(
     underscored: true,
   }
 );
-
-User.sync({ alter: true });

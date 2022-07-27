@@ -8,6 +8,25 @@ import "./cardItem";
 import "./archetype";
 import "./archetypeTag";
 import "./cardDeck";
+import "./deck";
+import "./associations";
+import { User } from "./user";
+import { MatchItem } from "./matchItem";
+import { MatchPlayer } from "./matchPlayer";
+import { CardItem } from "./cardItem";
+import { Archetype } from "./archetype";
+import { ArchetypeTag } from "./archetypeTag";
+import { CardDeck } from "./cardDeck";
+import { Deck } from "./deck";
+
+User.sync({ alter: true });
+MatchItem.sync({ alter: true });
+MatchPlayer.sync({ alter: true });
+CardItem.sync({ alter: true });
+Archetype.sync({ alter: true });
+ArchetypeTag.sync({ alter: true });
+CardDeck.sync({ alter: true });
+Deck.sync({ alter: true });
 
 export function getSequelizeInstance(): Sequelize {
   return new Sequelize({

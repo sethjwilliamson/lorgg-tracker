@@ -24,5 +24,3 @@ Archetype.init(
     underscored: true,
   }
 );
-
-Archetype.sync({ alter: true });

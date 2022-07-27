@@ -55,5 +55,3 @@ CardItem.init(
     underscored: true,
   }
 );
-
-CardItem.sync({ alter: true });

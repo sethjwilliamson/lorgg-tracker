@@ -31,5 +31,3 @@ CardDeck.init(
     underscored: true,
   }
 );
-
-CardDeck.sync({ alter: true });

@@ -52,5 +52,3 @@ MatchItem.init(
     underscored: true,
   }
 );
-
-MatchItem.sync({ alter: true });

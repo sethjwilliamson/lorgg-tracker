@@ -34,5 +34,3 @@ MatchPlayer.init(
     underscored: true,
   }
 );
-
-MatchPlayer.sync({ alter: true });

@@ -49,5 +49,3 @@ ArchetypeTag.init(
     underscored: true,
   }
 );
-
-ArchetypeTag.sync({ alter: true });
