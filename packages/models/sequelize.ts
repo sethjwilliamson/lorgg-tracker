@@ -7,6 +7,7 @@ import "./matchPlayer";
 import "./cardItem";
 import "./archetype";
 import "./archetypeTag";
+import "./cardDeck";
 
 export function getSequelizeInstance(): Sequelize {
   return new Sequelize({
