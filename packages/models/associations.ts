@@ -1,4 +1,3 @@
-import { getDeckFromCode } from "lor-deckcodes-ts";
 import { Archetype } from "./archetype";
 import { ArchetypeTag } from "./archetypeTag";
 import { CardDeck } from "./cardDeck";
@@ -7,6 +6,7 @@ import { Deck } from "./deck";
 import { MatchItem } from "./matchItem";
 import { MatchPlayer } from "./matchPlayer";
 import { Timeline } from "./timeline";
+import { TrackerMatchInfo } from "./trackerMatchInfo";
 import { User } from "./user";
 
 ArchetypeTag.belongsTo(Archetype);
@@ -29,5 +29,10 @@ Deck.hasMany(MatchPlayer);
 MatchPlayer.belongsTo(User);
 User.hasMany(MatchPlayer);
 
-Timeline.belongsTo(MatchPlayer);
-MatchPlayer.hasMany(Timeline);
+TrackerMatchInfo.belongsTo(MatchPlayer);
+MatchPlayer.hasOne(TrackerMatchInfo);
+
+Timeline.belongsTo(TrackerMatchInfo);
+TrackerMatchInfo.hasMany(Timeline);
+Timeline.belongsTo(CardItem);
+CardItem.hasMany(Timeline);
