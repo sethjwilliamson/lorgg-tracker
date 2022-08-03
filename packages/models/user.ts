@@ -1,7 +1,4 @@
-import { DataTypes, Model } from "sequelize";
-import { getSequelizeInstance } from "./sequelize";
-
-const sequelize = getSequelizeInstance();
+import { DataTypes, Model, Sequelize } from "sequelize";
 
 export class User extends Model {
   declare id: number;
@@ -12,34 +9,36 @@ export class User extends Model {
   declare updatedAt: Date;
 }
 
-User.init(
-  {
-    // Model attributes are defined here
-    id: {
-      type: DataTypes.BIGINT.UNSIGNED,
-      autoIncrement: true,
-      allowNull: false,
-      primaryKey: true,
+export function initializeTimeline(sequelize: Sequelize) {
+  User.init(
+    {
+      // Model attributes are defined here
+      id: {
+        type: DataTypes.BIGINT.UNSIGNED,
+        autoIncrement: true,
+        allowNull: false,
+        primaryKey: true,
+      },
+      displayName: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        unique: "users_display_name_tag_line_server_index",
+      },
+      tagLine: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        unique: "users_display_name_tag_line_server_index",
+      },
+      server: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        unique: "users_display_name_tag_line_server_index",
+      },
     },
-    displayName: {
-      type: DataTypes.STRING,
-      allowNull: false,
-      unique: "users_display_name_tag_line_server_index",
-    },
-    tagLine: {
-      type: DataTypes.STRING,
-      allowNull: false,
-      unique: "users_display_name_tag_line_server_index",
-    },
-    server: {
-      type: DataTypes.STRING,
-      allowNull: false,
-      unique: "users_display_name_tag_line_server_index",
-    },
-  },
-  {
-    sequelize,
-    modelName: "User",
-    underscored: true,
-  }
-);
+    {
+      sequelize,
+      modelName: "User",
+      underscored: true,
+    }
+  );
+}

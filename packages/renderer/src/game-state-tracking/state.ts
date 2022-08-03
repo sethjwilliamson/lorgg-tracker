@@ -2,7 +2,6 @@ import axios, { AxiosError, AxiosResponse } from "axios";
 import { Context } from "./context";
 import { StateLorClosed } from "./state-lor-closed";
 import Store from "electron-store";
-import { Deck } from "lor-deckcodes-ts";
 
 type LocalApiEndpoint =
   | "static-decklist"
