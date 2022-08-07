@@ -1,15 +1,8 @@
 import {
   Association,
-  BelongsToManyAddAssociationMixin,
-  BelongsToManyAddAssociationsMixin,
-  BelongsToManyCountAssociationsMixin,
-  BelongsToManyCreateAssociationMixin,
-  BelongsToManyGetAssociationsMixin,
-  BelongsToManyHasAssociationMixin,
-  BelongsToManyHasAssociationsMixin,
-  BelongsToManyRemoveAssociationMixin,
-  BelongsToManyRemoveAssociationsMixin,
-  BelongsToManySetAssociationsMixin,
+  BelongsToGetAssociationMixin,
+  BelongsToSetAssociationMixin,
+  BelongsToCreateAssociationMixin,
   CreationOptional,
   ForeignKey,
   InferAttributes,
@@ -36,37 +29,12 @@ export class Timeline extends Model<
   // Since TS cannot determine model association at compile time
   // we have to declare them here purely virtually
   // these will not exist until `Model.init` was called.
-  declare getTrackerMatchInfos: BelongsToManyGetAssociationsMixin<TrackerMatchInfo>; // Note the null assertions!
-  declare addTrackerMatchInfo: BelongsToManyAddAssociationMixin<
+  declare getTrackerMatchInfos: BelongsToGetAssociationMixin<TrackerMatchInfo>; // Note the null assertions!
+  declare setTrackerMatchInfos: BelongsToSetAssociationMixin<
     TrackerMatchInfo,
     number
   >;
-  declare addTrackerMatchInfos: BelongsToManyAddAssociationsMixin<
-    TrackerMatchInfo,
-    number
-  >;
-  declare setTrackerMatchInfos: BelongsToManySetAssociationsMixin<
-    TrackerMatchInfo,
-    number
-  >;
-  declare removeTrackerMatchInfo: BelongsToManyRemoveAssociationMixin<
-    TrackerMatchInfo,
-    number
-  >;
-  declare removeTrackerMatchInfos: BelongsToManyRemoveAssociationsMixin<
-    TrackerMatchInfo,
-    number
-  >;
-  declare hasTrackerMatchInfo: BelongsToManyHasAssociationMixin<
-    TrackerMatchInfo,
-    number
-  >;
-  declare hasTrackerMatchInfos: BelongsToManyHasAssociationsMixin<
-    TrackerMatchInfo,
-    number
-  >;
-  declare countTrackerMatchInfos: BelongsToManyCountAssociationsMixin;
-  declare createTrackerMatchInfo: BelongsToManyCreateAssociationMixin<TrackerMatchInfo>;
+  declare createTrackerMatchInfo: BelongsToCreateAssociationMixin<TrackerMatchInfo>;
 
   // You can also pre-declare possible inclusions, these will only be populated if you
   // actively include a relation.
@@ -75,19 +43,9 @@ export class Timeline extends Model<
   // Since TS cannot determine model association at compile time
   // we have to declare them here purely virtually
   // these will not exist until `Model.init` was called.
-  declare getCardItems: BelongsToManyGetAssociationsMixin<CardItem>; // Note the null assertions!
-  declare addCardItem: BelongsToManyAddAssociationMixin<CardItem, number>;
-  declare addCardItems: BelongsToManyAddAssociationsMixin<CardItem, number>;
-  declare setCardItems: BelongsToManySetAssociationsMixin<CardItem, number>;
-  declare removeCardItem: BelongsToManyRemoveAssociationMixin<CardItem, number>;
-  declare removeCardItems: BelongsToManyRemoveAssociationsMixin<
-    CardItem,
-    number
-  >;
-  declare hasCardItem: BelongsToManyHasAssociationMixin<CardItem, number>;
-  declare hasCardItems: BelongsToManyHasAssociationsMixin<CardItem, number>;
-  declare countCardItems: BelongsToManyCountAssociationsMixin;
-  declare createCardItem: BelongsToManyCreateAssociationMixin<CardItem>;
+  declare getCardItem: BelongsToGetAssociationMixin<CardItem>; // Note the null assertions!
+  declare setCardItem: BelongsToSetAssociationMixin<CardItem, number>;
+  declare createCardItem: BelongsToCreateAssociationMixin<CardItem>;
 
   // You can also pre-declare possible inclusions, these will only be populated if you
   // actively include a relation.

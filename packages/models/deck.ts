@@ -1,15 +1,8 @@
 import {
   Association,
-  BelongsToManyAddAssociationMixin,
-  BelongsToManyAddAssociationsMixin,
-  BelongsToManyCountAssociationsMixin,
-  BelongsToManyCreateAssociationMixin,
-  BelongsToManyGetAssociationsMixin,
-  BelongsToManyHasAssociationMixin,
-  BelongsToManyHasAssociationsMixin,
-  BelongsToManyRemoveAssociationMixin,
-  BelongsToManyRemoveAssociationsMixin,
-  BelongsToManySetAssociationsMixin,
+  BelongsToCreateAssociationMixin,
+  BelongsToGetAssociationMixin,
+  BelongsToSetAssociationMixin,
   CreationOptional,
   ForeignKey,
   HasManyAddAssociationMixin,
@@ -87,22 +80,9 @@ export class Deck extends Model<
   // Since TS cannot determine model association at compile time
   // we have to declare them here purely virtually
   // these will not exist until `Model.init` was called.
-  declare getArchetypes: BelongsToManyGetAssociationsMixin<Archetype>; // Note the null assertions!
-  declare addArchetype: BelongsToManyAddAssociationMixin<Archetype, number>;
-  declare addArchetypes: BelongsToManyAddAssociationsMixin<Archetype, number>;
-  declare setArchetypes: BelongsToManySetAssociationsMixin<Archetype, number>;
-  declare removeArchetype: BelongsToManyRemoveAssociationMixin<
-    Archetype,
-    number
-  >;
-  declare removeArchetypes: BelongsToManyRemoveAssociationsMixin<
-    Archetype,
-    number
-  >;
-  declare hasArchetype: BelongsToManyHasAssociationMixin<Archetype, number>;
-  declare hasArchetypes: BelongsToManyHasAssociationsMixin<Archetype, number>;
-  declare countArchetypes: BelongsToManyCountAssociationsMixin;
-  declare createArchetype: BelongsToManyCreateAssociationMixin<Archetype>;
+  declare getArchetype: BelongsToGetAssociationMixin<Archetype>; // Note the null assertions!
+  declare setArchetype: BelongsToSetAssociationMixin<Archetype, number>;
+  declare createArchetype: BelongsToCreateAssociationMixin<Archetype>;
 
   // You can also pre-declare possible inclusions, these will only be populated if you
   // actively include a relation.

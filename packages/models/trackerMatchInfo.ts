@@ -14,9 +14,6 @@ import {
   InferCreationAttributes,
   Model,
   NonAttribute,
-  BelongsToCreateAssociationMixin,
-  BelongsToGetAssociationMixin,
-  BelongsToSetAssociationMixin,
   ForeignKey,
 } from "sequelize";
 import { MatchPlayer } from "./matchPlayer";
