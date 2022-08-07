@@ -1,29 +1,45 @@
+import { MatchItem } from "./matchItem";
+import { MatchPlayer } from "./matchPlayer";
 import { User } from "./user";
 
-// User.truncate();
-/*
+export function createSampleData() {
+  //User.truncate();
 
-let user = User.build({
-    displayName: '123',
-    tagLine: '123',
-    server: '123',
-})
+  let user: User = User.build({
+    id: Math.floor(Math.random() * 10000),
+    tagLine: "test",
+    displayName: "test",
+    server: "test",
+  });
 
-user.save()
+  let matchItem: MatchItem = MatchItem.build({
+    id: Math.floor(Math.random() * 10000),
+    riotMatchId: `Test-${Math.floor(Math.random() * 10000)}`,
+    gameMode: "Constructed",
+    gameType: "Ranked",
+    server: "americas",
+    startedAt: new Date(),
+  });
+  /*
+    let matchPlayerLocal: MatchPlayer = MatchPlayer.build({
+        isVictory: true,
+        isFirst: false,
+        
+    })
 
-console.log(user)
+    let matchPlayerOpponent: MatchPlayer = MatchPlayer.build({
+        isVictory: false,
+        isFirst: true
+    })
+    
+
+    user.setMatchPlayers([matchPlayerLocal])
+
+    user.save()
+    matchPlayerLocal.save();
+
+    //matchPlayerLocal.setMatchItem()
 */
 
-// for ( let i = 0; i < 300; i++ ) {
-//     let user = User.build({
-//         displayName: '123',
-//         tagLine: '123',
-//         server: '123',
-//     })
-
-//     console.log(user)
-
-//     user.save().catch( (e : Error) => {
-//         console.error(e)
-//     })
-// }
+  matchItem.save();
+}

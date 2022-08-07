@@ -10,6 +10,7 @@ import { TrackerMatchInfo } from "./trackerMatchInfo";
 import { MatchItem } from "./matchItem";
 import { MatchPlayer } from "./matchPlayer";
 import { User } from "./user";
+import { createSampleData } from "./createSampleData";
 
 const sequelize = new Sequelize({
   dialect: "sqlite",
@@ -44,6 +45,8 @@ ArchetypeTag.init(
       allowNull: true,
       unique: "archetype_tags_tag_operator_value_quantity_archetype_id_unique",
     },
+    createdAt: DataTypes.DATE,
+    updatedAt: DataTypes.DATE,
     // TODO: Add the unique value to archetype_id
   },
   {
@@ -61,6 +64,8 @@ Archetype.init(
       allowNull: false,
       primaryKey: true,
     },
+    createdAt: DataTypes.DATE,
+    updatedAt: DataTypes.DATE,
   },
   {
     sequelize,
@@ -167,6 +172,8 @@ User.init(
       allowNull: false,
       unique: "users_display_name_tag_line_server_index",
     },
+    createdAt: DataTypes.DATE,
+    updatedAt: DataTypes.DATE,
   },
   {
     sequelize,
@@ -191,6 +198,8 @@ MatchPlayer.init(
       type: DataTypes.BOOLEAN,
       allowNull: false,
     },
+    createdAt: DataTypes.DATE,
+    updatedAt: DataTypes.DATE,
   },
   {
     sequelize,
@@ -228,6 +237,8 @@ MatchItem.init(
       type: DataTypes.TIME,
       allowNull: false,
     },
+    createdAt: DataTypes.DATE,
+    updatedAt: DataTypes.DATE,
   },
   {
     sequelize,
@@ -249,6 +260,8 @@ Deck.init(
       allowNull: false,
       unique: true,
     },
+    createdAt: DataTypes.DATE,
+    updatedAt: DataTypes.DATE,
   },
   {
     sequelize,
@@ -290,6 +303,8 @@ CardItem.init(
       type: DataTypes.TINYINT.UNSIGNED,
       allowNull: false,
     },
+    createdAt: DataTypes.DATE,
+    updatedAt: DataTypes.DATE,
   },
   {
     sequelize,
@@ -311,6 +326,8 @@ CardDeck.init(
       allowNull: false,
       unique: "card_decks_quantity_deck_id_card_item_id_unique",
     },
+    createdAt: DataTypes.DATE,
+    updatedAt: DataTypes.DATE,
     // TODO: Add the unique value to deck_id and card_item_id
   },
   {
@@ -349,6 +366,13 @@ TrackerMatchInfo.hasMany(Timeline);
 Timeline.belongsTo(CardItem);
 CardItem.hasMany(Timeline);
 
-sequelize.sync({ force: true }).catch((e: Error) => {
-  console.error(e);
-});
+sequelize
+  .sync({ force: true })
+  .then((response) => {
+    console.log(response);
+
+    createSampleData();
+  })
+  .catch((e: Error) => {
+    console.error(e);
+  });

@@ -1,44 +1,61 @@
-import { DataTypes, Model, Sequelize } from "sequelize";
+import {
+  Association,
+  CreationOptional,
+  DataTypes,
+  HasManyAddAssociationMixin,
+  HasManyAddAssociationsMixin,
+  HasManyCountAssociationsMixin,
+  HasManyCreateAssociationMixin,
+  HasManyGetAssociationsMixin,
+  HasManyHasAssociationMixin,
+  HasManyHasAssociationsMixin,
+  HasManyRemoveAssociationMixin,
+  HasManyRemoveAssociationsMixin,
+  HasManySetAssociationsMixin,
+  InferAttributes,
+  InferCreationAttributes,
+  Model,
+  NonAttribute,
+  Sequelize,
+} from "sequelize";
+import { MatchPlayer } from "./matchPlayer";
 
-export class User extends Model {
-  declare id: number;
+export class User extends Model<
+  InferAttributes<User>,
+  InferCreationAttributes<User>
+> {
+  declare id: CreationOptional<number>;
   declare displayName: string;
   declare tagLine: string;
   declare server: string;
-  declare createdAt: Date;
-  declare updatedAt: Date;
-}
+  declare createdAt: CreationOptional<Date>;
+  declare updatedAt: CreationOptional<Date>;
 
-export function initializeTimeline(sequelize: Sequelize) {
-  User.init(
-    {
-      // Model attributes are defined here
-      id: {
-        type: DataTypes.BIGINT.UNSIGNED,
-        autoIncrement: true,
-        allowNull: false,
-        primaryKey: true,
-      },
-      displayName: {
-        type: DataTypes.STRING,
-        allowNull: false,
-        unique: "users_display_name_tag_line_server_index",
-      },
-      tagLine: {
-        type: DataTypes.STRING,
-        allowNull: false,
-        unique: "users_display_name_tag_line_server_index",
-      },
-      server: {
-        type: DataTypes.STRING,
-        allowNull: false,
-        unique: "users_display_name_tag_line_server_index",
-      },
-    },
-    {
-      sequelize,
-      modelName: "User",
-      underscored: true,
-    }
-  );
+  // Since TS cannot determine model association at compile time
+  // we have to declare them here purely virtually
+  // these will not exist until `Model.init` was called.
+  declare getMatchPlayers: HasManyGetAssociationsMixin<MatchPlayer>; // Note the null assertions!
+  declare addMatchPlayer: HasManyAddAssociationMixin<MatchPlayer, number>;
+  declare addMatchPlayers: HasManyAddAssociationsMixin<MatchPlayer, number>;
+  declare setMatchPlayers: HasManySetAssociationsMixin<MatchPlayer, number>;
+  declare removeMatchPlayer: HasManyRemoveAssociationMixin<MatchPlayer, number>;
+  declare removeMatchPlayers: HasManyRemoveAssociationsMixin<
+    MatchPlayer,
+    number
+  >;
+  declare hasMatchPlayer: HasManyHasAssociationMixin<MatchPlayer, number>;
+  declare hasMatchPlayers: HasManyHasAssociationsMixin<MatchPlayer, number>;
+  declare countMatchPlayers: HasManyCountAssociationsMixin;
+  declare createMatchPlayer: HasManyCreateAssociationMixin<
+    MatchPlayer,
+    "userId"
+  >;
+
+  // You can also pre-declare possible inclusions, these will only be populated if you
+  // actively include a relation.
+  declare matchPlayers?: NonAttribute<MatchPlayer[]>; // Note this is optional since it's only populated when explicitly requested in code
+
+  declare static associations: {
+    matchPlayers: Association<User, MatchPlayer>;
+  };
 }
