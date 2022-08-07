@@ -1,18 +1,26 @@
+import { Deck } from "./deck";
 import { MatchItem } from "./matchItem";
 import { MatchPlayer } from "./matchPlayer";
 import { User } from "./user";
 
-export function createSampleData() {
+export async function createSampleData() {
   //User.truncate();
 
-  let user: User = User.build({
+  let user: User = await User.create({
     id: Math.floor(Math.random() * 10000),
     tagLine: "test",
     displayName: "test",
     server: "test",
   });
 
-  let matchItem: MatchItem = MatchItem.build({
+  let opponent: User = await User.create({
+    id: Math.floor(Math.random() * 10000),
+    tagLine: "test",
+    displayName: "opponent",
+    server: "test",
+  });
+
+  let matchItem: MatchItem = await MatchItem.create({
     id: Math.floor(Math.random() * 10000),
     riotMatchId: `Test-${Math.floor(Math.random() * 10000)}`,
     gameMode: "Constructed",
@@ -20,26 +28,30 @@ export function createSampleData() {
     server: "americas",
     startedAt: new Date(),
   });
-  /*
-    let matchPlayerLocal: MatchPlayer = MatchPlayer.build({
-        isVictory: true,
-        isFirst: false,
-        
-    })
 
-    let matchPlayerOpponent: MatchPlayer = MatchPlayer.build({
-        isVictory: false,
-        isFirst: true
-    })
-    
+  let localDeck: Deck = await Deck.create({
+    id: Math.floor(Math.random() * 10000),
+    deckCode: "CEAAA",
+  });
 
-    user.setMatchPlayers([matchPlayerLocal])
+  let opponentDeck: Deck = await Deck.create({
+    id: Math.floor(Math.random() * 10000),
+    deckCode: "CEAAAA",
+  });
 
-    user.save()
-    matchPlayerLocal.save();
+  let matchPlayerLocal: MatchPlayer = await MatchPlayer.create({
+    id: Math.floor(Math.random() * 10000),
+    isFirst: true,
+    isVictory: true,
+    userId: user.id,
+  });
 
-    //matchPlayerLocal.setMatchItem()
-*/
+  let matchPlayerOpponent: MatchPlayer = await MatchPlayer.create({
+    id: Math.floor(Math.random() * 10000),
+    isFirst: false,
+    isVictory: false,
+    userId: opponent.id,
+  });
 
-  matchItem.save();
+  matchPlayerLocal.setMatchItem(matchItem);
 }
