@@ -4,6 +4,7 @@ import { MatchPlayer } from "./matchPlayer";
 import { User } from "./user";
 
 export async function createSampleData() {
+  return;
   //User.truncate();
 
   let user: User = await User.create({

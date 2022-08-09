@@ -10,6 +10,8 @@ import {
 } from "./state";
 import { StateMenus } from "./state-menus";
 import { ipcRenderer } from "electron";
+import dayjs from "dayjs";
+import { StateEndOfGame } from "./state-end-of-game";
 const scan = require("node-process-memory-scanner");
 
 type Timeline = {
@@ -41,6 +43,8 @@ export class StateInGame extends State {
   private decklist!: { [key: string]: number };
 
   public afterStateChange() {
+    this.startTime = dayjs();
+
     this.cardsInHand = this.startingCards || [];
 
     console.log(this.startingCards);
@@ -59,6 +63,7 @@ export class StateInGame extends State {
           return;
         }
 
+        this.deckCode = data.DeckCode;
         this.decklist = data.CardsInDeck;
       }
     );
@@ -69,6 +74,10 @@ export class StateInGame extends State {
       (response: AxiosResponse<LocalApiResponse>) => {
         const { data } =
           response as AxiosResponse<PositionalRectanglesResponse>;
+
+        if (!this.opponentName) {
+          this.opponentName = data.OpponentName;
+        }
 
         if (data.GameState === "Menus") {
           this.context.transitionTo(new StateMenus());
@@ -130,7 +139,7 @@ export class StateInGame extends State {
           response as AxiosResponse<PositionalRectanglesResponse>;
 
         if (data.GameState === "Menus") {
-          this.context.transitionTo(new StateMenus());
+          this.context.transitionTo(new StateEndOfGame(this));
         }
       }
     );

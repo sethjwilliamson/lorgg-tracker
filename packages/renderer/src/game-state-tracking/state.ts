@@ -2,6 +2,7 @@ import axios, { AxiosError, AxiosResponse } from "axios";
 import { Context } from "./context";
 import { StateLorClosed } from "./state-lor-closed";
 import Store from "electron-store";
+import dayjs, { Dayjs } from "dayjs";
 
 type LocalApiEndpoint =
   | "static-decklist"
@@ -62,6 +63,9 @@ export abstract class State {
   protected mulliganCards!: Array<LocalCard>;
   protected startingCards!: Array<LocalCard>;
   protected previousRectangles: string = "";
+  protected deckCode: string | null = null;
+  protected startTime: Dayjs | null = null;
+  protected opponentName: string | null = null;
 
   constructor(prevState?: State) {
     if (!prevState) {
@@ -75,6 +79,9 @@ export abstract class State {
     this.mulliganCards = prevState.mulliganCards;
     this.startingCards = prevState.startingCards;
     this.previousRectangles = prevState.previousRectangles;
+    this.deckCode = prevState.deckCode;
+    this.startTime = prevState.startTime;
+    this.opponentName = prevState.opponentName;
   }
 
   public setContext(context: Context) {
