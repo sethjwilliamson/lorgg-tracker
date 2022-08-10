@@ -22,7 +22,7 @@ export class MatchItem extends Model<
   InferAttributes<MatchItem>,
   InferCreationAttributes<MatchItem>
 > {
-  declare id: number;
+  declare id: CreationOptional<number>;
   declare riotMatchId: string | null;
   declare gameMode: string;
   declare gameType: string;

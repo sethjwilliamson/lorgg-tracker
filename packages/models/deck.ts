@@ -29,7 +29,7 @@ export class Deck extends Model<
   InferAttributes<Deck>,
   InferCreationAttributes<Deck>
 > {
-  declare id: number;
+  declare id: CreationOptional<number>;
   declare deckCode: string;
   declare createdAt: CreationOptional<Date>;
   declare updatedAt: CreationOptional<Date>;

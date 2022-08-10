@@ -17,13 +17,13 @@ export class CardDeck extends Model<
   InferAttributes<CardDeck>,
   InferCreationAttributes<CardDeck>
 > {
-  declare id: number;
+  declare id: CreationOptional<number>;
   declare quantity: number;
   declare createdAt: CreationOptional<Date>;
   declare updatedAt: CreationOptional<Date>;
 
-  declare cardItemId: ForeignKey<CardItem["id"]>;
-  declare deckId: ForeignKey<Deck["id"]>;
+  declare cardItemId: CreationOptional<ForeignKey<CardItem["id"]>>;
+  declare deckId: CreationOptional<ForeignKey<Deck["id"]>>;
 
   // Since TS cannot determine model association at compile time
   // we have to declare them here purely virtually

@@ -16,14 +16,14 @@ export class ArchetypeTag extends Model<
   InferAttributes<ArchetypeTag>,
   InferCreationAttributes<ArchetypeTag>
 > {
-  declare id: number;
+  declare id: CreationOptional<number>;
   declare tag: string;
   declare value: string;
-  declare quantity: number | null;
-  declare operator: string | null;
+  declare quantity: CreationOptional<number | null>;
+  declare operator: CreationOptional<string | null>;
   declare createdAt: CreationOptional<Date>;
   declare updatedAt: CreationOptional<Date>;
-  declare archetypeId: ForeignKey<Archetype["id"]>;
+  declare archetypeId: CreationOptional<ForeignKey<Archetype["id"]>>;
 
   // Since TS cannot determine model association at compile time
   // we have to declare them here purely virtually

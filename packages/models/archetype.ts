@@ -23,7 +23,7 @@ export class Archetype extends Model<
   InferAttributes<Archetype>,
   InferCreationAttributes<Archetype>
 > {
-  declare id: number;
+  declare id: CreationOptional<number>;
   declare createdAt: CreationOptional<Date>;
   declare updatedAt: CreationOptional<Date>;
 
