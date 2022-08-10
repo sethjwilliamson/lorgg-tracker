@@ -9,9 +9,11 @@ type LocalApiEndpoint =
   | "positional-rectangles"
   | "game-result";
 
+export type CardsInDeck = { [key: string]: number };
+
 export type StaticDecklistResponse = {
   DeckCode: string | null;
-  CardsInDeck: { [key: string]: number } | null;
+  CardsInDeck: CardsInDeck | null;
 };
 
 export type CardPositionRectangle = {
