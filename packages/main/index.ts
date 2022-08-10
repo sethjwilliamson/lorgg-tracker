@@ -1,9 +1,9 @@
 import { app, BrowserWindow, shell, ipcMain } from "electron";
 import { release } from "os";
+import { User } from "../models";
 import { join } from "path";
 import "../processes/Tokens/token-controller";
 import "../processes/Updates/auto-update-controller";
-import "../models";
 
 // Disable GPU Acceleration for Windows 7
 if (release().startsWith("6.1")) app.disableHardwareAcceleration();
@@ -118,3 +118,19 @@ app.on("ready", () => {
     console.log("test");
   });
 });
+
+ipcMain.handle("read-user-data", (event) => {
+  return app.getPath("userData");
+});
+
+setTimeout(() => {
+  let user = User.build({
+    displayName: "test",
+    tagLine: "test",
+    server: "test",
+  });
+
+  console.log(user);
+
+  user.save();
+}, 6000);
