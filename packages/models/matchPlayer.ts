@@ -57,8 +57,8 @@ export class MatchPlayer extends Model<
   // Since TS cannot determine model association at compile time
   // we have to declare them here purely virtually
   // these will not exist until `Model.init` was called.
-  declare getDecks: BelongsToGetAssociationMixin<Deck>; // Note the null assertions!
-  declare setDecks: BelongsToSetAssociationMixin<Deck, number>;
+  declare getDeck: BelongsToGetAssociationMixin<Deck>; // Note the null assertions!
+  declare setDeck: BelongsToSetAssociationMixin<Deck, number>;
   declare createDeck: BelongsToCreateAssociationMixin<Deck>;
 
   // You can also pre-declare possible inclusions, these will only be populated if you
