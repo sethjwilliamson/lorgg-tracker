@@ -96,6 +96,7 @@
     "express": "^4.18.1",
     "lor-deckcodes-ts": "^1.1.0",
     "node-process-memory-scanner": "git+https://github.com/sethjwilliamson/node-memory-process-scanner",
+    "pg-hstore": "^2.3.4",
     "sequelize": "^6.21.2",
     "sqlite3": "^5.0.8",
     "tippy.js": "^6.3.7",
