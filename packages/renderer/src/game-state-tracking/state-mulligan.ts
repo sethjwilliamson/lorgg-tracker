@@ -56,7 +56,7 @@ export class StateMulligan extends State {
       return;
     }
 
-    if (this.mulliganCards) {
+    if (this.mulliganCards.length > 0) {
       return;
     }
 
@@ -71,6 +71,8 @@ export class StateMulligan extends State {
           wasDrawn: true,
         };
       });
+
+    console.log(this.mulliganCards);
   }
 
   private updateStartingCards(rectangles: Array<CardPositionRectangle>) {

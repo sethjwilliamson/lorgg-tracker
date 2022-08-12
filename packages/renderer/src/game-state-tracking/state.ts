@@ -23,18 +23,18 @@ export type CardPositionRectangle = {
   TopLeftY: number;
   Width: number;
   Height: number;
-  LocalPlayer: Boolean;
+  LocalPlayer: boolean;
 };
 
 export type Card = {
   CardCode: string;
   CardID: number;
-  LocalPlayer: Boolean;
+  LocalPlayer: boolean;
 };
 
 export interface LocalCard extends Card {
   RoundAddedToHand: number | null;
-  wasDrawn: Boolean;
+  wasDrawn: boolean;
 }
 
 export type PositionalRectanglesResponse = {
@@ -50,7 +50,7 @@ export type PositionalRectanglesResponse = {
 
 export type GameResultResponse = {
   GameID: number;
-  LocalPlayerWon: Boolean;
+  LocalPlayerWon: boolean;
 };
 
 export type LocalApiResponse =
@@ -58,22 +58,50 @@ export type LocalApiResponse =
   | PositionalRectanglesResponse
   | GameResultResponse;
 
+type Timeline = {
+  self: Array<{
+    roundNumber: number;
+    playedCards: Array<LocalCard>;
+  }>;
+  opponent: Array<{
+    roundNumber: number;
+    playedCards: Array<Card>;
+  }>;
+};
+
+export type ExportData = {
+  mulliganCards: Array<LocalCard>;
+  startingCards: Array<LocalCard>;
+  timeline: Timeline;
+  roundNumber: number;
+  cardsInHand: Array<LocalCard>;
+};
+
 export abstract class State {
   protected context!: Context;
   protected lorPort: string = "21337";
   protected store: Store;
-  protected mulliganCards!: Array<LocalCard>;
-  protected startingCards!: Array<LocalCard>;
+  public mulliganCards: Array<LocalCard> = [];
+  public startingCards: Array<LocalCard> = [];
   protected previousRectangles: string = "";
   protected deckCode: string | null = null;
   protected startTime: Dayjs | null = null;
   protected opponentName: string | null = null;
+  public timeline: Timeline = {
+    self: [],
+    opponent: [],
+  };
+  public roundNumber: number = 0;
+  public cardsInHand: Array<LocalCard> = [];
 
   constructor(prevState?: State) {
     if (!prevState) {
       this.store = new Store();
       return;
     }
+
+    console.log("CONSTRUCTOR");
+    console.log(console.log(prevState));
 
     this.context = prevState.context;
     this.lorPort = prevState.lorPort;
@@ -84,6 +112,9 @@ export abstract class State {
     this.deckCode = prevState.deckCode;
     this.startTime = prevState.startTime;
     this.opponentName = prevState.opponentName;
+    this.timeline = prevState.timeline;
+    this.roundNumber = prevState.roundNumber;
+    this.cardsInHand = prevState.cardsInHand;
   }
 
   public setContext(context: Context) {

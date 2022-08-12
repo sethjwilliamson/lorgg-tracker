@@ -114,7 +114,7 @@ async function init() {
       },
       roundAddedToHand: {
         type: DataTypes.TINYINT.UNSIGNED,
-        allowNull: false,
+        allowNull: true,
       },
       roundPlayed: {
         type: DataTypes.TINYINT.UNSIGNED,
@@ -132,6 +132,10 @@ async function init() {
         type: DataTypes.BOOLEAN,
         allowNull: true,
       },
+      // roundChampionLeveledUp: {
+      //   type: DataTypes.TINYINT.UNSIGNED,
+      //   allowNull: true
+      // }
     },
     {
       sequelize,

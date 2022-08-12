@@ -15,6 +15,7 @@ import {
   Model,
   NonAttribute,
   ForeignKey,
+  CreationOptional,
 } from "sequelize";
 import { MatchPlayer } from "./matchPlayer";
 import { Timeline } from "./timeline";
@@ -23,10 +24,10 @@ export class TrackerMatchInfo extends Model<
   InferAttributes<TrackerMatchInfo>,
   InferCreationAttributes<TrackerMatchInfo>
 > {
-  declare id: number;
+  declare id: CreationOptional<number>;
   declare roundGameEnded: number;
 
-  declare matchPlayerId: ForeignKey<MatchPlayer["id"]>;
+  declare matchPlayerId: CreationOptional<ForeignKey<MatchPlayer["id"]>>;
 
   // Since TS cannot determine model association at compile time
   // we have to declare them here purely virtually

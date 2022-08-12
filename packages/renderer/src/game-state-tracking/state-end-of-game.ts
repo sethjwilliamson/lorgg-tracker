@@ -2,7 +2,7 @@ import axios, { AxiosResponse } from "axios";
 import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
 import { ipcRenderer } from "electron";
-import { State } from "./state";
+import { ExportData, State } from "./state";
 import { StateMenus } from "./state-menus";
 
 dayjs.extend(utc);
@@ -82,7 +82,17 @@ export class StateEndOfGame extends State {
 
         this.sendLocalDataToServer(response.data);
 
-        ipcRenderer.send("update-local-database", response.data);
+        let exportData: ExportData = {
+          mulliganCards: this.mulliganCards,
+          startingCards: this.startingCards,
+          timeline: this.timeline,
+          roundNumber: this.roundNumber,
+          cardsInHand: this.cardsInHand,
+        };
+
+        console.log(exportData);
+
+        ipcRenderer.send("update-local-database", response.data, exportData);
 
         // this.updateLocalDatabase(response.data);
 

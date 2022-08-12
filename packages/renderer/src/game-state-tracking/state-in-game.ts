@@ -14,30 +14,13 @@ import dayjs from "dayjs";
 import { StateEndOfGame } from "./state-end-of-game";
 const scan = require("node-process-memory-scanner");
 
-type Timeline = {
-  self: Array<{
-    roundNumber: Number;
-    playedCards: Array<LocalCard>;
-  }>;
-  opponent: Array<{
-    roundNumber: Number;
-    playedCards: Array<Card>;
-  }>;
-};
-
 export class StateInGame extends State {
-  private cardsInHand: Array<LocalCard> = [];
   private cardsInHandTemp: Array<LocalCard> = [];
   private cardsPendingPlay: Array<LocalCard> = []; // Should only be needed for cases like discard
   private opponentCards: Array<Card> = [];
   private previousDrawCardId: number = 0;
-  private roundNumber: number = 0;
   private isCheckingRound: boolean = false;
   private drawnCards: Array<Card> = [];
-  private timeline: Timeline = {
-    self: [],
-    opponent: [],
-  };
   private cardsPlayedThisRoundSelf: Array<LocalCard> = [];
   private cardsPlayedThisRoundOpponent: Array<Card> = [];
   private decklist!: { [key: string]: number };

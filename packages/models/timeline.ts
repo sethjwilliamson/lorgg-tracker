@@ -17,14 +17,17 @@ export class Timeline extends Model<
   InferAttributes<Timeline>,
   InferCreationAttributes<Timeline>
 > {
-  declare id: number;
-  declare roundAddedToHand: number;
+  declare id: CreationOptional<number>;
+  declare roundAddedToHand: number | null;
   declare roundPlayed: number | null;
   declare wasDrawn: boolean;
   declare wasInMulligan: boolean;
   declare wasKeptInMulligan: boolean | null;
-  declare cardItemId: ForeignKey<CardItem["id"]>;
-  declare trackerMatchInfoId: ForeignKey<TrackerMatchInfo["id"]>;
+  // declare roundChampionLeveledUp: number | null;
+  declare cardItemId: CreationOptional<ForeignKey<CardItem["id"]>>;
+  declare trackerMatchInfoId: CreationOptional<
+    ForeignKey<TrackerMatchInfo["id"]>
+  >;
 
   // Since TS cannot determine model association at compile time
   // we have to declare them here purely virtually

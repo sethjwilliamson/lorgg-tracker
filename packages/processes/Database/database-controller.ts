@@ -16,17 +16,21 @@ import {
 import { GetMostRecentMatchResponse } from "../../../packages/renderer/src/game-state-tracking/state-end-of-game";
 import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
+import { ExportData } from "packages/renderer/src/game-state-tracking/state";
 dayjs.extend(utc);
 
 ipcMain.on(
   "update-local-database",
-  (event, data: GetMostRecentMatchResponse) => {
+  (event, data: GetMostRecentMatchResponse, exportData: ExportData) => {
     console.log(data);
-    updateLocalDatabase(data);
+    updateLocalDatabase(data, exportData);
   }
 );
 
-async function updateLocalDatabase(data: GetMostRecentMatchResponse) {
+async function updateLocalDatabase(
+  data: GetMostRecentMatchResponse,
+  exportData: ExportData
+) {
   const [localUser, localUserCreated] = await User.findOrCreate({
     where: { id: data.user_id },
     defaults: {
@@ -102,6 +106,8 @@ async function updateLocalDatabase(data: GetMostRecentMatchResponse) {
   if (localDeckCreated) {
     await addCardsToDeck(getDeckFromCode(data.deck_deck_code), localDeck);
   }
+
+  await addTrackerInfoToDb(localMatchPlayer, exportData);
 
   if (data.opponent_id === null) {
     return;
@@ -213,4 +219,108 @@ async function addCardsToDeck(cardsInDeck: LorDeck, deck: Deck) {
   }
 
   await deck.addCardDecks(cardDecks);
+}
+
+async function addTrackerInfoToDb(
+  matchPlayer: MatchPlayer,
+  exportData: ExportData
+) {
+  let trackerMatchInfo = await matchPlayer.createTrackerMatchInfo({
+    roundGameEnded: exportData.roundNumber,
+  });
+
+  let cardsKeptInMulligan = exportData.mulliganCards.filter((x) =>
+    exportData.startingCards.map((y) => y.CardID).includes(x.CardID)
+  );
+
+  for (let round of exportData.timeline.self) {
+    for (let playedCard of round.playedCards) {
+      let wasInMulligan = exportData.mulliganCards
+        .map((x) => x.CardID)
+        .includes(playedCard.CardID);
+      let wasKeptInMulligan = wasInMulligan
+        ? cardsKeptInMulligan.map((x) => x.CardID).includes(playedCard.CardID)
+        : null;
+
+      let timeline = await trackerMatchInfo.createTimeline({
+        roundAddedToHand: playedCard.RoundAddedToHand || exportData.roundNumber,
+        roundPlayed: round.roundNumber,
+        wasDrawn: playedCard.wasDrawn,
+        wasInMulligan: wasInMulligan,
+        wasKeptInMulligan: wasKeptInMulligan,
+      });
+
+      let cardItem = await CardItem.findOne({
+        where: { cardCode: playedCard.CardCode },
+      });
+
+      if (cardItem === null) {
+        console.error("CARD ITEM NOT FOUND");
+        continue;
+      }
+
+      timeline.setCardItem(cardItem);
+    }
+  }
+
+  for (let drawnCard of exportData.cardsInHand) {
+    let wasInMulligan = exportData.mulliganCards
+      .map((x) => x.CardID)
+      .includes(drawnCard.CardID);
+    let wasKeptInMulligan = wasInMulligan
+      ? cardsKeptInMulligan.map((x) => x.CardID).includes(drawnCard.CardID)
+      : null;
+
+    let timeline = await trackerMatchInfo.createTimeline({
+      roundAddedToHand: drawnCard.RoundAddedToHand || exportData.roundNumber,
+      roundPlayed: null,
+      wasDrawn: drawnCard.wasDrawn,
+      wasInMulligan: wasInMulligan,
+      wasKeptInMulligan: wasKeptInMulligan,
+    });
+
+    let cardItem = await CardItem.findOne({
+      where: { cardCode: drawnCard.CardCode },
+    });
+
+    if (cardItem === null) {
+      console.error("CARD ITEM NOT FOUND");
+      continue;
+    }
+
+    await timeline.setCardItem(cardItem);
+  }
+
+  console.log(exportData.startingCards);
+  console.log(exportData.mulliganCards);
+
+  for (let mulliganCard of exportData.mulliganCards) {
+    // Skip kept mulligan cards
+    if (
+      exportData.startingCards
+        .map((x) => x.CardID)
+        .includes(mulliganCard.CardID)
+    ) {
+      continue;
+    }
+
+    let timeline = await trackerMatchInfo.createTimeline({
+      roundAddedToHand: null,
+      roundPlayed: null,
+      wasDrawn: false,
+      wasInMulligan: true,
+      wasKeptInMulligan: false,
+    });
+
+    let cardItem = await CardItem.findOne({
+      where: { cardCode: mulliganCard.CardCode },
+    });
+
+    if (cardItem === null) {
+      console.error("CARD ITEM NOT FOUND");
+      continue;
+    }
+
+    await timeline.setCardItem(cardItem);
+  }
 }
