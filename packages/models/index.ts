@@ -380,22 +380,22 @@ async function init() {
   sequelize
     .sync({ force: true })
     .then((response) => {
-      let user = User.build({
-        displayName: "test2",
-        tagLine: "test2",
-        server: "test2",
-      });
-
-      console.log(user);
-
-      user.save();
       console.log(response);
-
-      createSampleData();
     })
     .catch((e: Error) => {
       console.error(e);
     });
 }
 
-export { User };
+export {
+  Timeline,
+  Archetype,
+  ArchetypeTag,
+  CardDeck,
+  CardItem,
+  Deck,
+  TrackerMatchInfo,
+  MatchItem,
+  MatchPlayer,
+  User,
+};

@@ -98,7 +98,7 @@
     "moment": "^2.29.4",
     "node-process-memory-scanner": "git+https://github.com/sethjwilliamson/node-memory-process-scanner",
     "pg-hstore": "^2.3.4",
-    "sequelize": "^6.21.2",
+    "sequelize": "^6.21.3",
     "sqlite3": "^5.0.8",
     "tippy.js": "^6.3.7",
     "vue-router": "^4.0.16",
