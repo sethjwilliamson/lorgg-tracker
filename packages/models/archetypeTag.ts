@@ -21,8 +21,6 @@ export class ArchetypeTag extends Model<
   declare value: string;
   declare quantity: CreationOptional<number | null>;
   declare operator: CreationOptional<string | null>;
-  declare createdAt: CreationOptional<Date>;
-  declare updatedAt: CreationOptional<Date>;
   declare archetypeId: CreationOptional<ForeignKey<Archetype["id"]>>;
 
   // Since TS cannot determine model association at compile time

@@ -23,7 +23,7 @@ export class CardItem extends Model<
   InferAttributes<CardItem>,
   InferCreationAttributes<CardItem>
 > {
-  declare id: number;
+  declare id: CreationOptional<number>;
   declare cardCode: string;
   declare region: string;
   declare type: string;

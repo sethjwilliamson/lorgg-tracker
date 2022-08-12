@@ -19,8 +19,6 @@ export class CardDeck extends Model<
 > {
   declare id: CreationOptional<number>;
   declare quantity: number;
-  declare createdAt: CreationOptional<Date>;
-  declare updatedAt: CreationOptional<Date>;
 
   declare cardItemId: CreationOptional<ForeignKey<CardItem["id"]>>;
   declare deckId: CreationOptional<ForeignKey<Deck["id"]>>;

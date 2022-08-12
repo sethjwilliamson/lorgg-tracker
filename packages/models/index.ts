@@ -11,6 +11,7 @@ import { MatchItem } from "./matchItem";
 import { MatchPlayer } from "./matchPlayer";
 import { User } from "./user";
 import { createSampleData } from "./createSampleData";
+import axios from "axios";
 
 init();
 
@@ -35,35 +36,32 @@ async function init() {
       tag: {
         type: DataTypes.STRING,
         allowNull: false,
-        unique:
-          "archetype_tags_tag_operator_value_quantity_archetype_id_unique",
       },
       value: {
         type: DataTypes.STRING,
         allowNull: false,
-        unique:
-          "archetype_tags_tag_operator_value_quantity_archetype_id_unique",
       },
       quantity: {
         type: DataTypes.TINYINT.UNSIGNED,
         allowNull: true,
-        unique:
-          "archetype_tags_tag_operator_value_quantity_archetype_id_unique",
       },
       operator: {
         type: DataTypes.CHAR,
         allowNull: true,
-        unique:
-          "archetype_tags_tag_operator_value_quantity_archetype_id_unique",
       },
-      createdAt: DataTypes.DATE,
-      updatedAt: DataTypes.DATE,
-      // TODO: Add the unique value to archetype_id
     },
     {
       sequelize,
       modelName: "ArchetypeTag",
       underscored: true,
+      timestamps: false,
+      indexes: [
+        {
+          unique: true,
+          fields: ["tag", "value", "quantity", "operator", "archetype_id"],
+          name: "archetype_tags_tag_operator_value_quantity_archetype_id_unique",
+        },
+      ],
     }
   );
 
@@ -171,17 +169,14 @@ async function init() {
       displayName: {
         type: DataTypes.STRING,
         allowNull: false,
-        unique: "users_display_name_tag_line_server_index",
       },
       tagLine: {
         type: DataTypes.STRING,
         allowNull: false,
-        unique: "users_display_name_tag_line_server_index",
       },
       server: {
         type: DataTypes.STRING,
         allowNull: false,
-        unique: "users_display_name_tag_line_server_index",
       },
       createdAt: DataTypes.DATE,
       updatedAt: DataTypes.DATE,
@@ -190,6 +185,13 @@ async function init() {
       sequelize,
       modelName: "User",
       underscored: true,
+      indexes: [
+        {
+          unique: true,
+          fields: ["display_name", "tag_line", "server"],
+          name: "users_display_name_tag_line_server_index",
+        },
+      ],
     }
   );
 
@@ -335,17 +337,20 @@ async function init() {
       quantity: {
         type: DataTypes.TINYINT.UNSIGNED,
         allowNull: false,
-        unique: "card_decks_quantity_deck_id_card_item_id_unique",
       },
-      createdAt: DataTypes.DATE,
-      updatedAt: DataTypes.DATE,
-      // TODO: Add the unique value to deck_id and card_item_id
     },
     {
       sequelize,
       timestamps: false,
       modelName: "CardDeck",
       underscored: true,
+      indexes: [
+        {
+          unique: true,
+          fields: ["quantity", "deck_id", "card_item_id"],
+          name: "card_decks_quantity_deck_id_card_item_id_unique",
+        },
+      ],
     }
   );
 
@@ -380,6 +385,23 @@ async function init() {
   sequelize
     .sync({ force: true })
     .then((response) => {
+      axios
+        .get("https://lor.gg/storage/json/en_us/setJson.json")
+        .then(async (response) => {
+          for (let card of response.data) {
+            await CardItem.findOrCreate({
+              where: { cardCode: card.cardCode },
+              defaults: {
+                cardCode: card.cardCode,
+                region: card.regionRefs[0],
+                type: card.typeRef,
+                attack: card.attack,
+                health: card.health,
+                cost: card.cost,
+              },
+            });
+          }
+        });
       console.log(response);
     })
     .catch((e: Error) => {
