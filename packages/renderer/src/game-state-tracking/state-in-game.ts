@@ -12,6 +12,11 @@ import { StateMenus } from "./state-menus";
 import { ipcRenderer } from "electron";
 import dayjs from "dayjs";
 import { StateEndOfGame } from "./state-end-of-game";
+import {
+  setJson,
+  SetJsonCard,
+  setJsonObject,
+} from "../../../processes/Jsons/json-controller";
 const scan = require("node-process-memory-scanner");
 
 export class StateInGame extends State {
@@ -24,17 +29,16 @@ export class StateInGame extends State {
   private cardsPlayedThisRoundSelf: Array<LocalCard> = [];
   private cardsPlayedThisRoundOpponent: Array<Card> = [];
   private decklist!: { [key: string]: number };
+  private champLevelingRectangles: Array<CardPositionRectangle> = [];
 
   public afterStateChange() {
     this.startTime = dayjs();
 
     this.cardsInHand = this.startingCards || [];
 
-    console.log(this.startingCards);
     for (let card of this.startingCards) {
       this.drawnCards.push(card);
     }
-    console.log(this.drawnCards);
 
     this.callLocalApiEndpoint("static-decklist").then(
       (response: AxiosResponse<LocalApiResponse>) => {
@@ -48,6 +52,8 @@ export class StateInGame extends State {
 
         this.deckCode = data.DeckCode;
         this.decklist = data.CardsInDeck;
+
+        this.implementChampionLeveledUpObject();
       }
     );
   }
@@ -87,6 +93,22 @@ export class StateInGame extends State {
     );
   }
 
+  private implementChampionLeveledUpObject() {
+    for (let cardCode in this.decklist) {
+      if (!(cardCode in setJsonObject)) {
+        continue;
+      }
+
+      if (setJsonObject[cardCode].supertype.length === 0) {
+        continue;
+      }
+
+      this.championRoundLeveledUp[cardCode] = 0;
+    }
+
+    console.log(this.championRoundLeveledUp);
+  }
+
   private updateCardsPlayedThisRound(cardDrawn: boolean) {
     this.cardsInHandTemp = this.cardsInHandTemp.map((x) => {
       let currentRound =
@@ -106,6 +128,9 @@ export class StateInGame extends State {
     let played = this.cardsInHand.filter(({ CardID }) => {
       return this.cardsInHandTemp.map((x) => x.CardID).indexOf(CardID) == -1;
     });
+
+    // TODO: Remove championsLeveled from played
+    // TODO: Update championRoundLeveledUp with championsLeveled
 
     console.log("Played");
     console.log(played);
@@ -188,22 +213,70 @@ export class StateInGame extends State {
       return;
     }
 
-    this.cardsInHandTemp = rectangles
-      .filter(
-        (x) =>
-          x.LocalPlayer &&
-          (x.TopLeftY - x.Height <= 0 ||
-            (x.Width / x.Height >= 0.68 && x.Width / x.Height <= 0.72))
-      )
-      .map((x) => {
-        return {
-          CardCode: x.CardCode,
-          CardID: x.CardID,
-          LocalPlayer: x.LocalPlayer,
-          RoundAddedToHand: null,
-          wasDrawn: this.drawnCards.some((y) => y.CardID === x.CardID),
-        };
-      });
+    if (this.champLevelingRectangles.length > 0) {
+      this.checkForLeveledChampion(rectangles);
+    }
+
+    let rectanglesInHand = rectangles.filter(
+      (x) =>
+        x.LocalPlayer &&
+        (x.TopLeftY - x.Height <= 0 ||
+          (x.Width / x.Height >= 0.68 && x.Width / x.Height <= 0.72))
+    );
+
+    this.cardsInHandTemp = rectanglesInHand.map((x) => {
+      return {
+        CardCode: x.CardCode,
+        CardID: x.CardID,
+        LocalPlayer: x.LocalPlayer,
+        RoundAddedToHand: null,
+        wasDrawn: this.drawnCards.some((y) => y.CardID === x.CardID),
+      };
+    });
+
+    // TODO: Decide to remove comment or not
+    if (
+      rectanglesInHand.length > 0 &&
+      rectanglesInHand.some(
+        (x) => x.TopLeftY < 0
+      ) /* && this.champLevelingRectangles.length === 0 */
+    ) {
+      console.log("CHAMPION LEVELING");
+      console.log("CHAMPION LEVELING");
+      console.log("CHAMPION LEVELING");
+      console.log("CHAMPION LEVELING");
+      console.log("CHAMPION LEVELING");
+      this.champLevelingRectangles = rectangles;
+    }
+  }
+
+  private checkForLeveledChampion(rectangles: Array<CardPositionRectangle>) {
+    let newRectangles = rectangles.filter(
+      (x) =>
+        !this.champLevelingRectangles.map((y) => y.CardID).includes(x.CardID) &&
+        x.LocalPlayer &&
+        setJsonObject[x.CardCode].supertype.length > 0
+    );
+
+    console.log("NEW RECTANGLES");
+    console.log(newRectangles);
+
+    this.champLevelingRectangles = [];
+
+    for (let leveledChamp of newRectangles) {
+      if (!(leveledChamp.CardCode in this.championRoundLeveledUp)) {
+        continue;
+      }
+
+      if (this.championRoundLeveledUp[leveledChamp.CardCode] > 0) {
+        continue;
+      }
+
+      console.log("LEVELLED CHAMP");
+      console.log(setJsonObject[leveledChamp.CardCode]);
+      // TODO:  Wait to update when checking round
+      this.championRoundLeveledUp[leveledChamp.CardCode] = this.roundNumber;
+    }
   }
 
   private checkEnemyAction(rectangles: Array<CardPositionRectangle>): Boolean {

@@ -2,7 +2,7 @@ import axios, { AxiosResponse } from "axios";
 import Store from "electron-store";
 import fs from "fs";
 
-type SetJsonCard = {
+export type SetJsonCard = {
   associatedCardRefs: Array<string>;
   regionRefs: Array<string>;
   attack: number;
@@ -30,9 +30,9 @@ type SetJsonCard = {
   updatedAt: string;
 };
 
-type SetJson = Array<SetJsonCard>;
+export type SetJson = Array<SetJsonCard>;
 
-type SetJsonObject = { [key: string]: SetJsonCard };
+export type SetJsonObject = { [key: string]: SetJsonCard };
 
 try {
   var setJson: SetJson = JSON.parse(

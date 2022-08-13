@@ -10,6 +10,7 @@ type LocalApiEndpoint =
   | "game-result";
 
 export type CardsInDeck = { [key: string]: number };
+export type ChampionRoundLeveledUp = { [key: string]: number };
 
 export type StaticDecklistResponse = {
   DeckCode: string | null;
@@ -75,6 +76,7 @@ export type ExportData = {
   timeline: Timeline;
   roundNumber: number;
   cardsInHand: Array<LocalCard>;
+  championRoundLeveledUp: ChampionRoundLeveledUp;
 };
 
 export abstract class State {
@@ -93,6 +95,7 @@ export abstract class State {
   };
   public roundNumber: number = 0;
   public cardsInHand: Array<LocalCard> = [];
+  public championRoundLeveledUp: ChampionRoundLeveledUp = {};
 
   constructor(prevState?: State) {
     if (!prevState) {
@@ -115,6 +118,7 @@ export abstract class State {
     this.timeline = prevState.timeline;
     this.roundNumber = prevState.roundNumber;
     this.cardsInHand = prevState.cardsInHand;
+    this.championRoundLeveledUp = prevState.championRoundLeveledUp;
   }
 
   public setContext(context: Context) {

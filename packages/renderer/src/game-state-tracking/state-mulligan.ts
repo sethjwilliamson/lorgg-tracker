@@ -44,14 +44,10 @@ export class StateMulligan extends State {
 
     if (
       rectangles.filter((x) => x.LocalPlayer && x.CardCode !== "face").length >
-      4
+        4 ||
+      rectangles.filter((x) => !x.LocalPlayer).length > 1
     ) {
       this.updateStartingCards(rectangles);
-      this.context.transitionTo(new StateInGame(this));
-      return;
-    }
-
-    if (rectangles.filter((x) => !x.LocalPlayer).length > 1) {
       this.context.transitionTo(new StateInGame(this));
       return;
     }

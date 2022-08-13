@@ -11,7 +11,9 @@ import { MatchItem } from "./matchItem";
 import { MatchPlayer } from "./matchPlayer";
 import { User } from "./user";
 import { createSampleData } from "./createSampleData";
-import axios from "axios";
+import axios, { AxiosResponse } from "axios";
+import Store from "electron-store";
+import { SetJson } from "packages/processes/Jsons/json-controller";
 
 init();
 
@@ -132,10 +134,10 @@ async function init() {
         type: DataTypes.BOOLEAN,
         allowNull: true,
       },
-      // roundChampionLeveledUp: {
-      //   type: DataTypes.TINYINT.UNSIGNED,
-      //   allowNull: true
-      // }
+      roundChampionLeveledUp: {
+        type: DataTypes.TINYINT.UNSIGNED,
+        allowNull: true,
+      },
     },
     {
       sequelize,
@@ -391,22 +393,18 @@ async function init() {
     .then((response) => {
       axios
         .get("https://lor.gg/storage/json/en_us/setJson.json")
-        .then(async (response) => {
-          for (let card of response.data) {
-            await CardItem.findOrCreate({
-              where: { cardCode: card.cardCode },
-              defaults: {
-                cardCode: card.cardCode,
-                region: card.regionRefs[0],
-                type: card.typeRef,
-                attack: card.attack,
-                health: card.health,
-                cost: card.cost,
-              },
+        .then((axiosResponse: AxiosResponse<SetJson>) => {
+          for (let card of axiosResponse.data) {
+            CardItem.upsert({
+              cardCode: card.cardCode,
+              region: card.regionRefs[0],
+              type: card.typeRef,
+              attack: card.attack,
+              health: card.health,
+              cost: card.cost,
             });
           }
         });
-      console.log(response);
     })
     .catch((e: Error) => {
       console.error(e);

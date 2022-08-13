@@ -23,7 +23,7 @@ export class Timeline extends Model<
   declare wasDrawn: boolean;
   declare wasInMulligan: boolean;
   declare wasKeptInMulligan: boolean | null;
-  // declare roundChampionLeveledUp: number | null;
+  declare roundChampionLeveledUp: number | null;
   declare cardItemId: CreationOptional<ForeignKey<CardItem["id"]>>;
   declare trackerMatchInfoId: CreationOptional<
     ForeignKey<TrackerMatchInfo["id"]>

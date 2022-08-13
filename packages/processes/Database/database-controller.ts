@@ -248,6 +248,8 @@ async function addTrackerInfoToDb(
         wasDrawn: playedCard.wasDrawn,
         wasInMulligan: wasInMulligan,
         wasKeptInMulligan: wasKeptInMulligan,
+        roundChampionLeveledUp:
+          exportData.championRoundLeveledUp[playedCard.CardCode],
       });
 
       let cardItem = await CardItem.findOne({
@@ -277,6 +279,8 @@ async function addTrackerInfoToDb(
       wasDrawn: drawnCard.wasDrawn,
       wasInMulligan: wasInMulligan,
       wasKeptInMulligan: wasKeptInMulligan,
+      roundChampionLeveledUp:
+        exportData.championRoundLeveledUp[drawnCard.CardCode],
     });
 
     let cardItem = await CardItem.findOne({
@@ -310,6 +314,8 @@ async function addTrackerInfoToDb(
       wasDrawn: false,
       wasInMulligan: true,
       wasKeptInMulligan: false,
+      roundChampionLeveledUp:
+        exportData.championRoundLeveledUp[mulliganCard.CardCode],
     });
 
     let cardItem = await CardItem.findOne({

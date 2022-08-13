@@ -88,6 +88,7 @@ export class StateEndOfGame extends State {
           timeline: this.timeline,
           roundNumber: this.roundNumber,
           cardsInHand: this.cardsInHand,
+          championRoundLeveledUp: this.championRoundLeveledUp,
         };
 
         console.log(exportData);
