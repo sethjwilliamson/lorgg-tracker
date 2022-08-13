@@ -230,16 +230,17 @@ async function addTrackerInfoToDb(
   });
 
   let cardsKeptInMulligan = exportData.mulliganCards.filter((x) =>
-    exportData.startingCards.map((y) => y.CardID).includes(x.CardID)
+    exportData.startingCards.some((y) => y.CardID === x.CardID)
   );
 
   for (let round of exportData.timeline.self) {
     for (let playedCard of round.playedCards) {
-      let wasInMulligan = exportData.mulliganCards
-        .map((x) => x.CardID)
-        .includes(playedCard.CardID);
+      let wasInMulligan = exportData.mulliganCards.some(
+        (x) => x.CardID === playedCard.CardID
+      );
+
       let wasKeptInMulligan = wasInMulligan
-        ? cardsKeptInMulligan.map((x) => x.CardID).includes(playedCard.CardID)
+        ? cardsKeptInMulligan.some((x) => x.CardID === playedCard.CardID)
         : null;
 
       let timeline = await trackerMatchInfo.createTimeline({
@@ -266,11 +267,12 @@ async function addTrackerInfoToDb(
   }
 
   for (let drawnCard of exportData.cardsInHand) {
-    let wasInMulligan = exportData.mulliganCards
-      .map((x) => x.CardID)
-      .includes(drawnCard.CardID);
+    let wasInMulligan = exportData.mulliganCards.some(
+      (x) => x.CardID === drawnCard.CardID
+    );
+
     let wasKeptInMulligan = wasInMulligan
-      ? cardsKeptInMulligan.map((x) => x.CardID).includes(drawnCard.CardID)
+      ? cardsKeptInMulligan.some((x) => x.CardID === drawnCard.CardID)
       : null;
 
     let timeline = await trackerMatchInfo.createTimeline({
@@ -301,9 +303,7 @@ async function addTrackerInfoToDb(
   for (let mulliganCard of exportData.mulliganCards) {
     // Skip kept mulligan cards
     if (
-      exportData.startingCards
-        .map((x) => x.CardID)
-        .includes(mulliganCard.CardID)
+      exportData.startingCards.some((x) => x.CardID === mulliganCard.CardID)
     ) {
       continue;
     }

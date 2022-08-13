@@ -247,7 +247,7 @@ export class StateInGame extends State {
   private checkForLeveledChampion(rectangles: Array<CardPositionRectangle>) {
     let newRectangles = rectangles.filter(
       (x) =>
-        !this.champLevelingRectangles.map((y) => y.CardID).includes(x.CardID) &&
+        !this.champLevelingRectangles.some((y) => y.CardID === x.CardID) &&
         x.LocalPlayer &&
         setJsonObject[x.CardCode].supertype.length > 0
     );
