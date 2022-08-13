@@ -2,6 +2,7 @@ import { app, BrowserWindow, shell, ipcMain } from "electron";
 import { release } from "os";
 import { User } from "../models";
 import { join } from "path";
+import { setJson, setJsonObject } from "../processes/Jsons/json-controller";
 import "../processes/Tokens/token-controller";
 import "../processes/Updates/auto-update-controller";
 import "../processes/Database/database-controller";
