@@ -129,9 +129,6 @@ export class StateInGame extends State {
       return this.cardsInHandTemp.map((x) => x.CardID).indexOf(CardID) == -1;
     });
 
-    // TODO: Remove championsLeveled from played
-    // TODO: Update championRoundLeveledUp with championsLeveled
-
     console.log("Played");
     console.log(played);
 
@@ -234,12 +231,9 @@ export class StateInGame extends State {
       };
     });
 
-    // TODO: Decide to remove comment or not
     if (
       rectanglesInHand.length > 0 &&
-      rectanglesInHand.some(
-        (x) => x.TopLeftY < 0
-      ) /* && this.champLevelingRectangles.length === 0 */
+      rectanglesInHand.some((x) => x.TopLeftY < 0)
     ) {
       console.log("CHAMPION LEVELING");
       console.log("CHAMPION LEVELING");
