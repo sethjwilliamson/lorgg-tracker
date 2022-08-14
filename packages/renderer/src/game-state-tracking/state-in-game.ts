@@ -21,7 +21,7 @@ const scan = require("node-process-memory-scanner");
 
 export class StateInGame extends State {
   private cardsInHandTemp: Array<LocalCard> = [];
-  private cardsPendingPlay: Array<LocalCard> = []; // Should only be needed for cases like discard
+  private cardIdsPendingPlay: Set<number> = new Set(); // Should only be needed for cases like discard
   private opponentCards: Array<Card> = [];
   private previousDrawCardId: number = 0;
   private isCheckingRound: boolean = false;
@@ -125,9 +125,16 @@ export class StateInGame extends State {
       };
     });
 
+    console.log(this.cardIdsPendingPlay);
+
     let played = this.cardsInHand.filter(({ CardID }) => {
-      return this.cardsInHandTemp.map((x) => x.CardID).indexOf(CardID) == -1;
+      return (
+        this.cardsInHandTemp.map((x) => x.CardID).indexOf(CardID) == -1 &&
+        this.cardIdsPendingPlay.has(CardID)
+      );
     });
+
+    this.cardIdsPendingPlay.clear();
 
     console.log("Played");
     console.log(played);
@@ -230,6 +237,19 @@ export class StateInGame extends State {
         wasDrawn: this.drawnCards.some((y) => y.CardID === x.CardID),
       };
     });
+
+    console.log(rectangles);
+
+    rectangles
+      .filter(
+        (x) =>
+          x.LocalPlayer &&
+          x.TopLeftY - x.Height > response.Screen.ScreenHeight * 0.2
+      )
+      .map((x) => x.CardID)
+      .forEach((x) => this.cardIdsPendingPlay.add(x));
+
+    console.log(this.cardIdsPendingPlay);
 
     if (
       rectanglesInHand.length > 0 &&
