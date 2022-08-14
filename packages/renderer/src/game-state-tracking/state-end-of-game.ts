@@ -1,5 +1,5 @@
 import axios, { AxiosResponse } from "axios";
-import dayjs from "dayjs";
+import dayjs, { Dayjs } from "dayjs";
 import utc from "dayjs/plugin/utc";
 import { ipcRenderer } from "electron";
 import { ExportData, State } from "./state";
@@ -41,7 +41,9 @@ export type GetMostRecentMatchResponse = {
 };
 
 export class StateEndOfGame extends State {
-  public afterStateChange() {}
+  public afterStateChange() {
+    this.endTime = dayjs();
+  }
 
   public handle() {
     this.context.transitionTo(new StateMenus());
@@ -89,6 +91,7 @@ export class StateEndOfGame extends State {
           roundNumber: this.roundNumber,
           cardsInHand: this.cardsInHand,
           championRoundLeveledUp: this.championRoundLeveledUp,
+          endTime: (this.endTime as Dayjs)?.toDate(),
         };
 
         console.log(exportData);

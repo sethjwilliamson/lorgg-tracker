@@ -77,6 +77,7 @@ export type ExportData = {
   roundNumber: number;
   cardsInHand: Array<LocalCard>;
   championRoundLeveledUp: ChampionRoundLeveledUp;
+  endTime: Date;
 };
 
 export abstract class State {
@@ -96,6 +97,7 @@ export abstract class State {
   public roundNumber: number = 0;
   public cardsInHand: Array<LocalCard> = [];
   public championRoundLeveledUp: ChampionRoundLeveledUp = {};
+  public endTime: Dayjs | null = null;
 
   constructor(prevState?: State) {
     if (!prevState) {
@@ -104,7 +106,7 @@ export abstract class State {
     }
 
     console.log("CONSTRUCTOR");
-    console.log(console.log(prevState));
+    console.log(prevState);
 
     this.context = prevState.context;
     this.lorPort = prevState.lorPort;
@@ -119,6 +121,8 @@ export abstract class State {
     this.roundNumber = prevState.roundNumber;
     this.cardsInHand = prevState.cardsInHand;
     this.championRoundLeveledUp = prevState.championRoundLeveledUp;
+    this.endTime = prevState.endTime;
+    console.log(this);
   }
 
   public setContext(context: Context) {

@@ -225,8 +225,11 @@ async function addTrackerInfoToDb(
   matchPlayer: MatchPlayer,
   exportData: ExportData
 ) {
+  console.log(exportData);
+
   let trackerMatchInfo = await matchPlayer.createTrackerMatchInfo({
     roundGameEnded: exportData.roundNumber,
+    endedAt: exportData.endTime,
   });
 
   let cardsKeptInMulligan = exportData.mulliganCards.filter((x) =>

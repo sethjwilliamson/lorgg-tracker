@@ -97,6 +97,10 @@ async function init() {
         type: DataTypes.TINYINT.UNSIGNED,
         allowNull: false,
       },
+      endedAt: {
+        type: DataTypes.DATE,
+        allowNull: false,
+      },
     },
     {
       sequelize,

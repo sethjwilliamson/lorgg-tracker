@@ -158,6 +158,7 @@ export class StateInGame extends State {
   }
 
   public beforeStateChange() {
+    this.endTime = dayjs();
     this.addTempToTimeline(false);
 
     console.log(this.timeline);

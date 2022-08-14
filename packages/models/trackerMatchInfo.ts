@@ -26,6 +26,7 @@ export class TrackerMatchInfo extends Model<
 > {
   declare id: CreationOptional<number>;
   declare roundGameEnded: number;
+  declare endedAt: Date;
 
   declare matchPlayerId: CreationOptional<ForeignKey<MatchPlayer["id"]>>;
 
