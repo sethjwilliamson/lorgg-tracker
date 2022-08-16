@@ -180,6 +180,8 @@ async function updateLocalDatabase(
       opponentDeck
     );
   }
+
+  await addOpponentTrackerInfoToDb(opponentMatchPlayer, exportData);
 }
 
 async function addArchetypeTagsToArchetype(
@@ -331,5 +333,39 @@ async function addTrackerInfoToDb(
     }
 
     await timeline.setCardItem(cardItem);
+  }
+}
+
+async function addOpponentTrackerInfoToDb(
+  opponentMatchPlayer: MatchPlayer,
+  exportData: ExportData
+) {
+  let trackerMatchInfo = await opponentMatchPlayer.createTrackerMatchInfo({
+    roundGameEnded: exportData.roundNumber,
+    endedAt: exportData.endTime,
+  });
+
+  for (let round of exportData.timeline.opponent) {
+    for (let playedCard of round.playedCards) {
+      let timeline = await trackerMatchInfo.createTimeline({
+        roundAddedToHand: null,
+        roundPlayed: round.roundNumber,
+        wasDrawn: true,
+        wasInMulligan: false,
+        wasKeptInMulligan: null,
+        roundChampionLeveledUp: null,
+      });
+
+      let cardItem = await CardItem.findOne({
+        where: { cardCode: playedCard.CardCode },
+      });
+
+      if (cardItem === null) {
+        console.error("CARD ITEM NOT FOUND");
+        continue;
+      }
+
+      timeline.setCardItem(cardItem);
+    }
   }
 }
