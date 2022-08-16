@@ -117,9 +117,11 @@ export class StateEndOfGame extends State {
 
     // If match start time is within a minute, return true
     if (
-      dayjs
-        .utc(data.match_item_started_at)
-        .diff(this.startTime, "minute", true) < 1
+      Math.abs(
+        dayjs
+          .utc(data.match_item_started_at)
+          .diff(this.startTime, "minute", true)
+      ) < 1
     ) {
       console.log("MATCH START TIME WAS WITHIN 1 MINUTE");
       return true;

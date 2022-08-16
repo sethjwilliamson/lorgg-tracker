@@ -32,8 +32,6 @@ export class StateInGame extends State {
   private champLevelingRectangles: Array<CardPositionRectangle> = [];
 
   public afterStateChange() {
-    this.startTime = dayjs();
-
     this.cardsInHand = this.startingCards || [];
 
     for (let card of this.startingCards) {

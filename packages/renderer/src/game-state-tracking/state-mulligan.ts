@@ -1,4 +1,5 @@
 import { AxiosResponse } from "axios";
+import dayjs from "dayjs";
 import {
   CardPositionRectangle,
   LocalApiResponse,
@@ -9,7 +10,9 @@ import { StateInGame } from "./state-in-game";
 import { StateMenus } from "./state-menus";
 
 export class StateMulligan extends State {
-  public afterStateChange() {}
+  public afterStateChange() {
+    this.startTime = dayjs();
+  }
 
   public handle() {}
 
