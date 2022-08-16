@@ -216,9 +216,7 @@ export class StateInGame extends State {
       return;
     }
 
-    if (this.champLevelingRectangles.length > 0) {
-      this.checkForLeveledChampion(rectangles);
-    }
+    this.checkForLeveledChampion(rectangles);
 
     let rectanglesInHand = rectangles.filter(
       (x) =>
@@ -264,6 +262,15 @@ export class StateInGame extends State {
   }
 
   private checkForLeveledChampion(rectangles: Array<CardPositionRectangle>) {
+    // Run through special Level up conditions
+    for (let rectangle of rectangles) {
+      this.checkForJinxLevel(rectangle);
+    }
+
+    if (this.champLevelingRectangles.length > 0) {
+      return;
+    }
+
     let newRectangles = rectangles.filter(
       (x) =>
         !this.champLevelingRectangles.some((y) => y.CardID === x.CardID) &&
@@ -290,6 +297,26 @@ export class StateInGame extends State {
 
       this.championRoundLeveledUp[leveledChamp.CardCode] = this.roundNumber;
     }
+  }
+
+  private checkForJinxLevel(rectangle: CardPositionRectangle) {
+    if (!rectangle.LocalPlayer) {
+      return;
+    }
+
+    if (rectangle.CardCode !== "01PZ040T2") {
+      return;
+    }
+
+    if (!("01PZ040" in this.championRoundLeveledUp)) {
+      return;
+    }
+
+    if (this.championRoundLeveledUp["01PZ040"] > 0) {
+      return;
+    }
+
+    this.championRoundLeveledUp["01PZ040"] = this.roundNumber;
   }
 
   private checkEnemyAction(rectangles: Array<CardPositionRectangle>): Boolean {
