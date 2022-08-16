@@ -107,8 +107,6 @@ export class StateEndOfGame extends State {
   }
 
   private checkIfMatchIsCorrect(data: GetMostRecentMatchResponse): boolean {
-    // TODO: Make sure there are no issues when a new state is created
-
     // If deckcode does not match, return false
     if (data.deck_deck_code !== this.deckCode) {
       console.log("DECK CODE DID NOT MATCH");

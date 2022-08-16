@@ -287,7 +287,7 @@ export class StateInGame extends State {
 
       console.log("LEVELLED CHAMP");
       console.log(setJsonObject[leveledChamp.CardCode]);
-      // TODO:  Wait to update when checking round
+
       this.championRoundLeveledUp[leveledChamp.CardCode] = this.roundNumber;
     }
   }
@@ -398,11 +398,6 @@ export class StateInGame extends State {
         card.RoundAddedToHand = this.roundNumber - 1;
         console.log(card);
       }
-    }
-
-    // TODO: Remove this
-    if (isNewRound) {
-      console.log(this.timeline);
     }
   }
 
