@@ -6,3 +6,7 @@ node_modules/
 .vscode/
 .simple-git-hooks.cjs
 yarn.lock
+
+data.json
+setJson.json
+setJsonObject.json
