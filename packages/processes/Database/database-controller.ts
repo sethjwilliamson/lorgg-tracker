@@ -21,9 +21,10 @@ dayjs.extend(utc);
 
 ipcMain.on(
   "update-local-database",
-  (event, data: GetMostRecentMatchResponse, exportData: ExportData) => {
+  async (event, data: GetMostRecentMatchResponse, exportData: ExportData) => {
     console.log(data);
-    updateLocalDatabase(data, exportData);
+    await updateLocalDatabase(data, exportData);
+    sendDataToServer(data.match_player_id);
   }
 );
 
@@ -368,4 +369,8 @@ async function addOpponentTrackerInfoToDb(
       timeline.setCardItem(cardItem);
     }
   }
+}
+
+function sendDataToServer(matchPlayerId: number) {
+  // axios.post
 }
