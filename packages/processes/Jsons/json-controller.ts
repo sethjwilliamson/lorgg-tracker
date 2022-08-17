@@ -1,38 +1,7 @@
 import axios, { AxiosResponse } from "axios";
 import Store from "electron-store";
 import fs from "fs";
-
-export type SetJsonCard = {
-  associatedCardRefs: Array<string>;
-  regionRefs: Array<string>;
-  attack: number;
-  cost: number;
-  health: number;
-  description: string;
-  descriptionRaw: string;
-  levelupDescription: string;
-  levelupDescriptionRaw: string;
-  flavorText: string;
-  artistName: string;
-  name: string;
-  cardCode: string;
-  keywords: Array<string>;
-  keywordRefs: Array<string>;
-  spellSpeedRef: "" | "Burst" | "Fast" | "Slow";
-  rarityRef: "None" | "Common" | "Rare" | "Epic" | "Champion";
-  subtypes: Array<string>;
-  subtypeRefs: Array<string>;
-  supertype: "" | "Champion";
-  typeRef: string;
-  collectible: true;
-  set: string;
-  createdAt: string;
-  updatedAt: string;
-};
-
-export type SetJson = Array<SetJsonCard>;
-
-export type SetJsonObject = { [key: string]: SetJsonCard };
+import { DataJson, SetJson, SetJsonObject } from "packages/types";
 
 try {
   var setJson: SetJson = JSON.parse(
@@ -48,6 +17,14 @@ try {
   ) as SetJsonObject;
 } catch {
   var setJsonObject: SetJsonObject = {} as SetJsonObject;
+}
+
+try {
+  var dataJson: DataJson = JSON.parse(
+    fs.readFileSync("data.json", "utf8")
+  ) as DataJson;
+} catch {
+  var dataJson: DataJson = {} as DataJson;
 }
 
 function init() {
@@ -73,8 +50,20 @@ function init() {
       setJson = response.data;
       setJsonObject = setJsonObjectTemp;
     });
+
+  axios
+    .get("https://lor.gg/storage/json/en_us/data.json")
+    .then((response: AxiosResponse<DataJson>) => {
+      fs.writeFileSync(
+        "data.json",
+        JSON.stringify(response.data, null, 2),
+        "utf8"
+      );
+
+      dataJson = response.data;
+    });
 }
 
 init();
 
-export { setJson, setJsonObject };
+export { setJson, setJsonObject, dataJson };
