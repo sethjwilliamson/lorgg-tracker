@@ -13,7 +13,7 @@ import { User } from "./user";
 import { createSampleData } from "./createSampleData";
 import axios, { AxiosResponse } from "axios";
 import Store from "electron-store";
-import { SetJson } from "packages/processes/Jsons/json-controller";
+import { SetJson } from "packages/types";
 
 init();
 
